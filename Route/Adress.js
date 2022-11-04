@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { Commune } = require("../Model/Commune");
-const { District } = require('../Model/district');
-const { Province } = require('../Model/province');
+const { District } = require('../Model/District');
+const { Province } = require('../Model/Province');
 
 router.get('/province',async function(req,res){
     const province = await Province.find()
