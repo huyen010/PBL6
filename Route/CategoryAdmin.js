@@ -1,6 +1,5 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const SlugF = require('../Config/slug');
 const {cloudinary} = require('../storage');
 const upload = require('../multer');
 

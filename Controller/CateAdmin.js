@@ -1,7 +1,7 @@
 const express = require('express');
 // const {Category,validateCate} = require('../model/Category');
 const mongoose = require('mongoose');
-const SlugF = require('../config/slug');
+const SlugF = require('../Config/slug');
 const { Category, validateCate } = require('../Model/Category');
 const { Product } = require('../Model/Product');
 // const auth = require('../middleware/auth');
