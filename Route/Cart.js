@@ -16,7 +16,7 @@ router.post('/', async function(req,res){
     const cart = Cart.findOne({id_user:iduser}).populate('product.id_product',['name','price']).populate('product.properties.size',['name','description']).populate('product.properties.color',['name']);
     res.status(200).send(cart);
 })
-router.post('/update',async function(req,res){
+router.post('/',async function(req,res){
     // lấy token từ middleware
     //decode token ra userID
     const iduser = 1
