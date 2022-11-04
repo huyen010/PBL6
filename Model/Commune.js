@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('joi')
-const { District } = require('./district');
+const { District } = require('./District');
 Joi.objectId = require('joi-objectid')(Joi);
 const { Representative } = require('./Representative');
 const Schema = mongoose.Schema;

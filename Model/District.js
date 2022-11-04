@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
-const { Province } = require('./province');
+const { Province } = require('./Province');
 Joi.objectId = require('joi-objectid')(Joi);
 const Schema = mongoose.Schema;
 const District = mongoose.model('District',new mongoose.Schema({
