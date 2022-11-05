@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const { Color } = require('./Color');
 const { Product } = require('./Product');
 const { Size } = require('./Size');
-const { User } = require('./User');
+const User = require('./User');
 const Schema = mongoose.Schema;
 
 const Cart = mongoose.model('Cart',new mongoose.Schema({
@@ -18,24 +18,20 @@ const Cart = mongoose.model('Cart',new mongoose.Schema({
             ref: Product,
             // required: true
         },
-        properties:[
-            {
-                size: {
-                    type: Schema.Types.ObjectId,
-                    ref: Size,
-                    // required: true
-                },
-                color: {
-                    type: Schema.Types.ObjectId,
-                    ref: Color,
-                    // required: true
-                },
-                number: {
-                    type: Number,
-                    // required:true
-                }
-            }
-        ]
+        size: {
+            type: Schema.Types.ObjectId,
+            ref: Size,
+            // required: true
+        },
+        color: {
+            type: Schema.Types.ObjectId,
+            ref: Color,
+            // required: true
+        },
+        number: {
+            type: Number,
+            // required:true
+        }
     }]
 },{ versionKey: false }));
 // function validateCart(Cart){

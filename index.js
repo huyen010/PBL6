@@ -27,6 +27,7 @@ const productPublic = require('./Route/ProductPublic');
 const address = require('./Route/Adress');
 const user = require('./Route/User');
 const auth = require('./Route/Auth');
+const cart = require('./Route/Cart');
 
 mongoose.connect('mongodb+srv://pnquang:quang123123a@cluster0.eenmlxn.mongodb.net/?retryWrites=true&w=majority')
   .then(() => console.log('Connected to MongoDB...'))
@@ -43,5 +44,6 @@ app.use('/api/v1/web/products',productPublic);
 app.use('/api/v1/web/adress',address);
 app.use('/api/v1/web/users',user);
 app.use('/api/v1/web/auth',auth);
+app.use('/api/v1/web/cart',cart);
 const port = process.env.PORT || 3002;
 http.listen(port, () => console.log('Socket listening on port...'+port));
