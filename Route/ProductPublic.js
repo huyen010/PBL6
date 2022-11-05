@@ -17,7 +17,6 @@ const router = express.Router();
 // })
 router.get('/list/:slug/:page',async function(req,res){
     let page = 1;
-    console.log(req.header('x-auth-token'));
     if(!req.params.page){
         page = req.params.page
     }

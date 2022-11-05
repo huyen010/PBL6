@@ -25,18 +25,23 @@ router.post('/insert',auth,async function(req,res){
         })
     }
     const cartAfter = await Cart.findOne({id_user:req.user.id}).populate('product.id_product',['name','price']).populate('product.color',['name']).populate('product.size',['name'])
-    res.send(cartAfter);
+    res.status(200).send({cart: cartAfter});
 })
 // router.get('/all',async function(req,res){
 //         const supplies = await Supply.find()
 //         return res.send(supplies);
 // })
-router.post('/', async function(req,res){
+router.post('/update',auth, async function(req,res){
     // lấy token từ middleware
     //decode token ra userID
-    const iduser = 1 
-    const cart = Cart.findOne({id_user:iduser}).populate('product.id_product',['name','price']).populate('product.properties.size',['name','description']).populate('product.properties.color',['name']);
-    res.status(200).send(cart);
+    let cartupdate = await Cart.updateOne({"id_user":req.user.id,"product": { "$elemMatch": { "id_product": req.body.id_product, 
+        "size": req.body.size, "color": req.body.color}}},
+            {'$set': {
+                'product.$.number': req.body.number,
+            }
+        })
+    const cartAfter = await Cart.findOne({id_user:req.user.id}).populate('product.id_product',['name','price']).populate('product.color',['name']).populate('product.size',['name'])
+    res.status(200).send({cart:cartAfter});
 })
 router.post('/',async function(req,res){
     // lấy token từ middleware
