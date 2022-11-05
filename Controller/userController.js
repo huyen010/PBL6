@@ -1,5 +1,6 @@
 const User = require('../Model/User');
 const { Commune } = require('../Model/Commune');
+const auth = require('../middleware/auth');
 const { District } = require('../Model/District');
 
 
@@ -42,7 +43,7 @@ exports.updateUser = async(req, res) => {
     const gender = (req.body.gender);
     var address = (req.body.address);
 
-    const id_account = req.account;
+    const id_account = req.user.id;
     var user = await User.findOne({ id_account: id_account });
     var id = user.id;
 
@@ -95,8 +96,7 @@ exports.updateUser = async(req, res) => {
 
 //------------ get user ------------//
 exports.getUser = async(req, res) => {
-
-    const id_account = req.account;
+    const id_account = req.user.id;
     var user = await User.findOne({ id_account: id_account });
     if (!user) {
         res.status(404).json({
@@ -133,7 +133,6 @@ exports.getUser = async(req, res) => {
         address: address
     }
 
-    // res.send(address);
     res.status(200).json({
         message: 'success',
         user: users,

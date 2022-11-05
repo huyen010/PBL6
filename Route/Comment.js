@@ -3,18 +3,18 @@ const auth = require('../middleware/auth');
 const router = express.Router();
 
 //------------ Importing Controllers ------------//
-const userController = require('../Controller/userController')
+const commentController = require('../Controller/commentController')
 
 //------------ create ------------//
-router.post('/', userController.createUser);
+router.post('/', auth, commentController.createComment);
 
 //------------ update ------------//
-router.put('/', auth, userController.updateUser);
+router.put('/:id', auth, commentController.updateComment);
 
 //------------ get ------------//
-router.get('/', auth, userController.getUser);
+router.get('/', auth, commentController.getComment);
 
 //------------ get ------------//
-router.delete('/:id', userController.deleteUser);
+// router.delete('/:id', auth, commentController.deleteUser);
 
 module.exports = router;
