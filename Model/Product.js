@@ -54,6 +54,10 @@ const Product = mongoose.model('Product', new mongoose.Schema({
     description:{
         type: String
     },
+    discount:{
+        type: Number,
+        default:0
+    },
     size: [{
         type: Schema.Types.ObjectId,
         ref: Size,
@@ -61,7 +65,8 @@ const Product = mongoose.model('Product', new mongoose.Schema({
     color: [{
         type: Schema.Types.ObjectId,
         ref: Color,
-    }]
+    }],
+
 },{versionKey: false }));
 function validateNewProduct(product){
     const schema = Joi.object({
