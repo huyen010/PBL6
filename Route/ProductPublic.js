@@ -57,10 +57,9 @@ router.get('/detail/:slug',async function(req,res){
             if(!product) return res.status(404).send('Sản phẩm không tồn tại');
             const stock = (await Stock.findOne({receive: {$elemMatch: {id_product: (product._id).toString()}}})).receive;
             rs = stock.filter(stock => stock.id_product == (product._id).toString())[0].receive;
-            const dc = await Discount.findOne({id_product: {"$in": (product._id).toString()}})
-            return res.status(200).send({product:product,discount:dc.percent,number:rs});
+            return res.status(200).send({product:product,number:rs});
     }catch(err){
-        return res.status(200).send({product:product,discount:0,number:rs});
+        return res.status(200).send({product:product,number:rs});
     }
 })
 // router.get('/number/:idproduct',async function(req,res){

@@ -131,6 +131,10 @@ router.get('/:slug/:page',async function(req,res){
 router.post('/discount', async function(req,res){
         let dc = new Discount({percent:req.body.percent,id_product:req.body.id_product,time:req.body.time});
         dc = await dc.save();
+        dc.id_product.map(async function(element){
+                console.log(element);
+                return await Product.findByIdAndUpdate(element,{discount:req.body.percent})
+        })
         res.send(dc);
 })
 // router.get('/discount/:id',async function(req,res){
