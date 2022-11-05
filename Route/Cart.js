@@ -11,9 +11,11 @@ router.get('/',auth,async function(req,res){
 
         price = price + (cart.product[i].id_product.price*(100-cart.product[i].id_product.discount))*cart.product[i].number;
     }
-    res.status(400).send({cart:cart,price:price});
+    res.status(200).send({cart:cart,price:price});
 })
 router.post('/insert',auth,async function(req,res){
+    console.log('11')
+    console.log(req.body);
     let cart = await Cart.findOne({id_account:req.user.id})
     const listPD = cart.product;
     let pd = listPD.filter(listPD => listPD.id_product.toString() === req.body.id_product
