@@ -1,15 +1,18 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
 const Account = require('./Account');
+const Schema = mongoose.Schema;
+
 const { Product } = require('./Product');
-const Comment = mongoose.model('Comment', new mongoose.Schema({
+
+const CommentSchema = new mongoose.Schema({
     id_account: {
         type: Schema.Types.ObjectId,
         ref: Account,
         required: true
     },
     id_product: {
-        type: [Schema.Types.ObjectId],
+        type: Schema.Types.ObjectId,
         ref: Product,
         required: true
     },
@@ -19,8 +22,11 @@ const Comment = mongoose.model('Comment', new mongoose.Schema({
     },
     content: {
         type: String,
-        // required: true
+    },
+    star: {
+        type: Number,
     }
-}, { versionKey: false }));
+}, { versionKey: false })
 
-exports.Comment = Comment;
+const Comment = mongoose.model('Comment', CommentSchema);
+module.exports = Comment;

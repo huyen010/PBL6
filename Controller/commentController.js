@@ -1,24 +1,47 @@
 const Comment = require('../Model/Comment');
-// const { Commune } = require('../Model/Commune');
+const Rate = require('../Model/Rate');
 const auth = require('../middleware/auth');
+const Account = require('../Model/Account');
 // const { District } = require('../Model/District');
 
 
 //------------ Create ------------//
-exports.createComment = (req, res) => {
+exports.createComment = async(req, res) => {
     const id_account = req.user.id;
     const urlImage = (req.body.urlImage);
     const content = (req.body.content);
     const id_product = (req.body.id_product);
 
+    const star = (req.body.star);
+    var rate = await Rate.findOne({ id_product: id_product });
 
-    const newComment = new Comment({
-        id_account,
-        id_product,
-        urlImage,
-        content
+    if (rate) {
+        var sum = rate.sum + star;
+        var amount = rate.amount + 1;
+        var starRate = sum / amount;
+        var rate = await Rate.findByIdAndUpdate(rate.id, {
+            rate: starRate,
+            sum: sum,
+            amount: amount
+        });
+    } else {
+        var newRate = new Rate({
+            id_product: id_product,
+            rate: star,
+            sum: star,
+            amount: 1
+        });
+        newRate = await newRate.save();
+    }
+
+    var newComment = new Comment({
+        id_account: id_account,
+        id_product: id_product,
+        urlImage: urlImage,
+        content: content,
+        star: star
     });
-    newComment.save();
+    newComment = await newComment.save();
     res.status(200).json({
         message: "success",
         user: newComment,
@@ -28,86 +51,42 @@ exports.createComment = (req, res) => {
 
 //------------ update ------------//
 exports.updateComment = async(req, res) => {
-    // const id_account = req.user.id;
-    // const urlImage = (req.body.urlImage);
-    // const content = (req.body.content);
-    // const id_product = (req.body.id_product);
+    const urlImage = (req.body.urlImage);
+    const content = (req.body.content);
+    const star = (req.body.star);
 
-    // var comment = await Comment.findByIdAndUpdate(req.params.id, { fullname: fullname, phone: phone, gender: gender, address: address, id_account });
+    var comment = await Comment.findById(req.params.id);
+    var sum = comment.star;
 
-    // user = await User.findOne({ id_account: id_account });
+    comment = await Comment.findByIdAndUpdate(req.params.id, {
+        urlImage: urlImage,
+        content: content,
+        star: star
+    });
+    comment = await Comment.findById(req.params.id);
 
-    // if (!user) {
-    //     res.status(404).json({
-    //         message: 'Not availble',
-    //         status: false
-    //     });
-    // }
+    var rate = await Rate.findOne({ id_product: comment.id_product });
+    var sum = rate.sum + star - sum;
+    var amount = rate.amount;
+    var starRate = sum / amount;
+    var rate = await Rate.findByIdAndUpdate(rate.id, {
+        rate: starRate,
+        sum: sum
+    });
 
-    // var id_commune = user.address.id_commune;
-    // if (id_commune) {
-    //     var district = await Commune.findById(id_commune);
-    //     var id_district = district.id_district;
-    //     var province = await District.findById(id_district);
-    //     address = {
-    //         id_province: province.id_province,
-    //         id_district: id_district,
-    //         id_commune: id_commune,
-    //         street: user.address.street
-    //     }
-    // } else {
-    //     address = {
-    //         id_province: "",
-    //         id_district: "",
-    //         id_commune: "",
-    //         street: ""
-    //     }
-    // }
-    // var users = {
-    //     _id: user._id,
-    //     id_account: id_account,
-    //     fullname: user.fullname,
-    //     email: user.email,
-    //     phone: user.phone,
-    //     gender: user.gender,
-    //     address: address
-    // }
 
-    // res.status(200).json({
-    //     message: 'success',
-    //     user: users,
-    //     status: true
-    // });
-}
-
-//------------ get user ------------//
-exports.getComment = async(req, res) => {
-    var comments = await Comment.find();
-    if (!comments) {
-        res.status(200).json({
-            message: 'Not availble',
-            status: false
-        });
-    }
     res.status(200).json({
-        message: 'success',
-        user: users,
+        message: "success",
+        user: comment,
         status: true
     });
 }
 
-//------------ delete user ------------//
-// exports.deleteCmment = async(req, res) => {
-//     const user = await User.findByIdAndDelete(req.params.id);
-
-//     if (!user) {
-//         res.status(404).json({
-//             message: 'Not availble',
-//             status: false
-//         });
-//     }
-//     res.status(200).json({
-//         message: 'success',
-//         status: true
-//     });
-// }
+exports.getComment = async function(req, res) {
+    const comment = await Comment.find({ id_product: req.params.id_product })
+    res.status(200).json({
+        message: "success",
+        comment: comment,
+        status: true
+    });
+}

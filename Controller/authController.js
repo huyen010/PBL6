@@ -10,6 +10,7 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
 //------------ Account Model ------------//
 const Account = require('../Model/Account');
+const { Cart } = require('../Model/Cart');
 const User = require('../Model/User');
 
 //------------ Register Handle ------------//
@@ -25,48 +26,48 @@ exports.registerHandle = (req, res) => {
     if (!name || !email || !password || !password2) {
         res.status(400).json({
             message: 'Please enter all fields',
-            state : false
-        } ) ;
+            state: false
+        });
     }
 
     //------------ Checking password mismatch ------------//
     if (password != password2) {
         res.status(400).json({
             message: 'Passwords do not match',
-            state : false
-        } ) ;
+            state: false
+        });
     }
 
     //------------ Checking password length ------------//
     if (password.length < 8) {
         res.status(400).json({
             message: 'Password must be at least 8 characters',
-            state : false
-        } ) ;
+            state: false
+        });
     }
     if (false) {
         res.status(400).json({
             message: 'Error',
-            state : false
-        } ) ;
+            state: false
+        });
     } else {
         //------------ Validation passed ------------//
         Account.findOne({ email: email }).then(account => {
             if (account) {
                 res.status(400).json({
                     message: 'Email ID already registered',
-                    state : false
-                } ) ;
+                    state: false
+                });
             } else {
                 const oauth2Client = new OAuth2(
                     "173872994719-pvsnau5mbj47h0c6ea6ojrl7gjqq1908.apps.googleusercontent.com", // ClientID
                     "OKXIYR14wBB_zumf30EC__iJ", // Client Secret
                     "https://developers.google.com/oauthplayground" // Redirect URL
-                ) ;
+                );
 
                 oauth2Client.setCredentials({
                     refresh_token: "1//04T_nqlj9UVrVCgYIARAAGAQSNwF-L9IrGm-NOdEKBOakzMn1cbbCHgg2ivkad3Q_hMyBkSQen0b5ABfR8kPR18aOoqhRrSlPm9w"
-                } ) ;
+                });
                 const accessToken = oauth2Client.getAccessToken()
 
                 const token = jwt.sign({ name, email, password }, JWT_KEY, { expiresIn: '30m' });
@@ -76,7 +77,7 @@ exports.registerHandle = (req, res) => {
                 <h2>Please click on below link to activate your account</h2>
                 <p>${CLIENT_URL}/api/v1/web/auth/activate/${token}</p>
                 <p><b>NOTE: </b> The above activation link expires in 30 minutes.</p>
-                ` ;
+                `;
 
                 const transporter = nodemailer.createTransport({
                     service: 'gmail',
@@ -87,8 +88,8 @@ exports.registerHandle = (req, res) => {
                         clientSecret: "OKXIYR14wBB_zumf30EC__iJ",
                         refreshToken: "1//04T_nqlj9UVrVCgYIARAAGAQSNwF-L9IrGm-NOdEKBOakzMn1cbbCHgg2ivkad3Q_hMyBkSQen0b5ABfR8kPR18aOoqhRrSlPm9w",
                         accessToken: accessToken
-                    } ,
-                } ) ;
+                    },
+                });
 
                 // send mail with defined transport object
                 const mailOptions = {
@@ -97,26 +98,26 @@ exports.registerHandle = (req, res) => {
                     subject: "Account Verification: NodeJS Auth ✔", // Subject line
                     generateTextFromHTML: true,
                     html: output, // html body
-                } ;
+                };
 
-                transporter.sendMail ( mailOptions ,  ( error ,  info )  =>  {
+                transporter.sendMail(mailOptions, (error, info) => {
                     if (error) {
 
                         res.status(400).json({
                             message: 'Something went wrong on our end. Please register again.',
-                            state : false
-                        } ) ;
+                            state: false
+                        });
                     } else {
                         console.log('Mail sent : %s', info.response);
                         res.status(200).json({
                             message: 'Activation link sent to email ID. Please activate to log in.',
                             status: true
-                        } ) ;
+                        });
                     }
-                } )
+                })
 
             }
-        } ) ;
+        });
     }
 }
 
@@ -143,7 +144,7 @@ exports.activateHandle = (req, res) => {
                             email,
                             password,
                             id_role
-                        } ) ;
+                        });
 
                         const fullname = "";
                         const id_account = newAccount.id;
@@ -152,17 +153,23 @@ exports.activateHandle = (req, res) => {
                         const address = {
                             id_commune: "",
                             street: ""
-                        } ;
-
+                        };
 
                         const newUser = new User({
-                            fullname ,
+                            fullname,
                             id_account,
                             address,
                             phone,
                             gender
-                        } ) ;
-                        newUser . save ( ) ;
+                        });
+                        newUser.save();
+
+                        const product = [];
+                        const newCart = new Cart({
+                            product,
+                            id_account
+                        });
+                        newCart.save();
 
                         bcryptjs.genSalt(10, (err, salt) => {
                             bcryptjs.hash(newAccount.password, salt, (err, hash) => {
@@ -172,15 +179,15 @@ exports.activateHandle = (req, res) => {
                                     .save()
                                     .then(account => {
                                         res.send('Account activated. You can now log in.');
-                                    } )
+                                    })
                                     .catch(err => console.log(err));
-                            } ) ;
-                        } ) ;
+                            });
+                        });
                     }
-                } ) ;
+                });
             }
 
-        } )
+        })
     } else {
         console.log("Account activation error!")
     }
@@ -196,8 +203,8 @@ exports.forgotPassword = (req, res) => {
     if (!email) {
         res.status(400).json({
             message: 'Please enter an email ID!',
-            state : false
-        } ) ;
+            state: false
+        });
     }
 
 
@@ -207,8 +214,8 @@ exports.forgotPassword = (req, res) => {
                 //------------ User already exists ------------//
                 res.status(400).json({
                     message: 'Account with Email ID does not exist!',
-                    state : false
-                } ) ;
+                    state: false
+                });
 
             } else {
 
@@ -216,11 +223,11 @@ exports.forgotPassword = (req, res) => {
                     "173872994719-pvsnau5mbj47h0c6ea6ojrl7gjqq1908.apps.googleusercontent.com", // ClientID
                     "OKXIYR14wBB_zumf30EC__iJ", // Client Secret
                     "https://developers.google.com/oauthplayground" // Redirect URL
-                ) ;
+                );
 
                 oauth2Client.setCredentials({
                     refresh_token: "1//04T_nqlj9UVrVCgYIARAAGAQSNwF-L9IrGm-NOdEKBOakzMn1cbbCHgg2ivkad3Q_hMyBkSQen0b5ABfR8kPR18aOoqhRrSlPm9w"
-                } ) ;
+                });
                 const accessToken = oauth2Client.getAccessToken()
 
                 const token = jwt.sign({ _id: account._id }, JWT_RESET_KEY, { expiresIn: '30m' });
@@ -228,7 +235,7 @@ exports.forgotPassword = (req, res) => {
                 const output = `
                 <h2>Your new account password</h2>
                 <p>123456789</p>
-                ` ;
+                `;
                 var password = '123456789';
                 bcryptjs.genSalt(10, (err, salt) => {
                     bcryptjs.hash(password, salt, (err, hash) => {
@@ -240,21 +247,21 @@ exports.forgotPassword = (req, res) => {
                                 if (err) {
                                     res.status(400).json({
                                         message: 'Error resetting password!',
-                                        state : false
-                                    } ) ;
+                                        state: false
+                                    });
                                 }
-                            } ) ;
+                            });
 
-                    } ) ;
-                } ) ;
+                    });
+                });
 
 
                 Account.updateOne({ resetLink: token }, (err, success) => {
                     if (err) {
                         res.status(400).json({
                             message: 'Error resetting password!',
-                            state : false
-                        } ) ;
+                            state: false
+                        });
                     } else {
                         const transporter = nodemailer.createTransport({
                             service: 'gmail',
@@ -265,8 +272,8 @@ exports.forgotPassword = (req, res) => {
                                 clientSecret: "OKXIYR14wBB_zumf30EC__iJ",
                                 refreshToken: "1//04T_nqlj9UVrVCgYIARAAGAQSNwF-L9IrGm-NOdEKBOakzMn1cbbCHgg2ivkad3Q_hMyBkSQen0b5ABfR8kPR18aOoqhRrSlPm9w",
                                 accessToken: accessToken
-                            } ,
-                        } ) ;
+                            },
+                        });
 
                         // send mail with defined transport object
                         const mailOptions = {
@@ -274,29 +281,29 @@ exports.forgotPassword = (req, res) => {
                             to: email, // list of receivers
                             subject: "Account Password Reset: NodeJS Auth ✔", // Subject line
                             html: output, // html body
-                        } ;
+                        };
 
-                        transporter.sendMail ( mailOptions ,  ( error ,  info )  =>  {
+                        transporter.sendMail(mailOptions, (error, info) => {
                             if (error) {
                                 console.log(error);
                                 res.status(400).json({
                                     message: 'Something went wrong on our end. Please try again later.',
-                                    state : false
-                                } ) ;
+                                    state: false
+                                });
                                 // res.redirect('/auth/forgot');
                             } else {
                                 console.log('Mail sent : %s', info.response);
                                 res.status(200).json({
                                     message: 'Password reset link sent to email ID. Please follow the instructions.',
                                     status: true
-                                } ) ;
+                                });
                             }
-                        } )
+                        })
                     }
-                } )
+                })
 
             }
-        } ) ;
+        });
     }
 }
 
@@ -309,24 +316,24 @@ exports.resetPassword = (req, res) => {
     if (!password || !password2) {
         res.status(400).json({
             message: 'Please enter all fields.',
-            state : false
-        } ) ;
+            state: false
+        });
     }
 
     //------------ Checking password length ------------//
     else if (password.length < 8) {
         res.status(400).json({
             message: 'Password must be at least 8 characters.',
-            state : false
-        } ) ;
+            state: false
+        });
     }
 
     //------------ Checking password mismatch ------------//
     else if (password != password2) {
         res.status(400).json({
             message: 'Passwords do not match.',
-            state : false
-        } ) ;
+            state: false
+        });
     } else {
         bcryptjs.genSalt(10, (err, salt) => {
             bcryptjs.hash(password, salt, (err, hash) => {
@@ -338,19 +345,19 @@ exports.resetPassword = (req, res) => {
                         if (err) {
                             res.status(400).json({
                                 message: 'Error resetting password!',
-                                state : false
-                            } ) ;
+                                state: false
+                            });
                         } else {
                             res.status(200).json({
                                 message: 'Password reset successfully!',
                                 status: true
-                            } ) ;
+                            });
                         }
                     }
-                ) ;
+                );
 
-            } ) ;
-        } ) ;
+            });
+        });
     }
 }
 
@@ -372,31 +379,31 @@ exports.login = (req, res) => {
 
                         res.status(400).json({
                             message: 'Email or password is incorrect!',
-                            state : false
-                        } ) ;
+                            state: false
+                        });
                     }
 
                 } else {
                     res.status(400).json({
                         message: 'Email or password is incorrect!',
                         token: "",
-                        state : false
-                    } ) ;
+                        state: false
+                    });
                 }
-            } )
+            })
         } else {
             res.status(400).json({
                 message: 'Add proper parameter first!',
                 token: "",
-                state : false
-            } ) ;
+                state: false
+            });
         }
     } catch (e) {
         res.status(400).json({
             message: 'Something went wrong!',
             token: "",
-            state : false
-        } ) ;
+            state: false
+        });
     }
 }
 
@@ -404,18 +411,18 @@ function checkUserAndGenerateToken(data, req, res) {
     jwt.sign({ Account: data.username, id: data._id }, PRIVATE_KEY, { expiresIn: '1d' }, (err, token) => {
         if (err) {
             res.status(400).json({
-                state : false ,
+                state: false,
                 message: err,
-            } ) ;
+            });
         } else {
             res.json({
                 message: 'Login Successfully.',
-                token : token ,
+                token: token,
                 status: true
-            } ) ;
+            });
 
         }
-    } ) ;
+    });
 }
 
 //------------ Logout Handle ------------//
@@ -424,6 +431,6 @@ exports.logoutHandle = (req, res) => {
         res.json({
             message: 'Logout Successfully.',
             status: true
-        } ) ;
-    } )
+        });
+    })
 }

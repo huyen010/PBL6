@@ -14,7 +14,7 @@ app.use(cors())
 //   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 //   next();
 // });
-const mongoose = require('mongoose');   
+const mongoose = require('mongoose');
 // echo redis errors to the console
 const http = require('http').Server(app);
 // const cateAdmin = require('./Route/CategoryAdmin');
@@ -28,22 +28,26 @@ const address = require('./Route/Address');
 const user = require('./Route/User');
 const auth = require('./Route/Auth');
 const cart = require('./Route/Cart');
+const comment = require('./Route/Comment');
+const rate = require('./Route/Rate');
 
 mongoose.connect('mongodb+srv://pnquang:quang123123a@cluster0.eenmlxn.mongodb.net/?retryWrites=true&w=majority')
-  .then(() => console.log('Connected to MongoDB...'))
-  .catch(err => console.error('Could not connect to MongoDB...'));
+    .then(() => console.log('Connected to MongoDB...'))
+    .catch(err => console.error('Could not connect to MongoDB...'));
 // app.use('/uploads', express.static('uploads'));
 app.use(express.json());
 // app.use('/api/v1/cms/categories',cateAdmin);
-app.use('/api/v1/cms/products',productAdmin);
-app.use('/api/v1/cms/categories',categoryAdmin);
-app.use('/api/v1/cms/stock',stockAdmin);
-app.use('/api/v1/cms/supplies',supplyAdmin);
-app.use('/api/v1/cms/representatives',representAdmin);
-app.use('/api/v1/web/products',productPublic);
-app.use('/api/v1/web/address',address);
-app.use('/api/v1/web/users',user);
-app.use('/api/v1/web/auth',auth);
-app.use('/api/v1/web/cart',cart);
+app.use('/api/v1/cms/products', productAdmin);
+app.use('/api/v1/cms/categories', categoryAdmin);
+app.use('/api/v1/cms/stock', stockAdmin);
+app.use('/api/v1/cms/supplies', supplyAdmin);
+app.use('/api/v1/cms/representatives', representAdmin);
+app.use('/api/v1/web/products', productPublic);
+app.use('/api/v1/web/address', address);
+app.use('/api/v1/web/users', user);
+app.use('/api/v1/web/auth', auth);
+app.use('/api/v1/web/cart', cart);
+app.use('/api/v1/web/comment', comment);
+app.use('/api/v1/web/rate', rate);
 const port = process.env.PORT || 3002;
-http.listen(port, () => console.log('Socket listening on port...'+port));
+http.listen(port, () => console.log('Socket listening on port...' + port));
