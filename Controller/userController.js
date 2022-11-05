@@ -11,6 +11,7 @@ exports.createUser = (req, res) => {
     const phone = (req.body.phone);
     const gender = (req.body.gender);
     const address = (req.body.address);
+    const urlImage = (req.body.urlImage);
 
     User.findOne({ phone: phone }).then(user => {
         if (user) {
@@ -24,7 +25,8 @@ exports.createUser = (req, res) => {
                 id_account,
                 address,
                 phone,
-                gender
+                gender,
+                urlImage
             });
             newUser.save();
             res.status(200).json({
@@ -42,12 +44,13 @@ exports.updateUser = async(req, res) => {
     const phone = (req.body.phone);
     const gender = (req.body.gender);
     var address = (req.body.address);
+    var urlImage = (req.body.urlImage);
 
     const id_account = req.user.id;
     var user = await User.findOne({ id_account: id_account });
     var id = user.id;
 
-    var user = await User.findByIdAndUpdate(id, { fullname: fullname, phone: phone, gender: gender, address: address, id_account });
+    var user = await User.findByIdAndUpdate(id, { fullname: fullname, phone: phone, gender: gender, address: address, urlImage: urlImage });
 
     user = await User.findOne({ id_account: id_account });
 
@@ -84,7 +87,8 @@ exports.updateUser = async(req, res) => {
         email: user.email,
         phone: user.phone,
         gender: user.gender,
-        address: address
+        address: address,
+        urlImage: user.urlImage
     }
 
     res.status(200).json({
@@ -130,7 +134,8 @@ exports.getUser = async(req, res) => {
         email: user.email,
         phone: user.phone,
         gender: user.gender,
-        address: address
+        address: address,
+        urlImage: user.urlImage
     }
 
     res.status(200).json({

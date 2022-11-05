@@ -29,6 +29,10 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    urlImage: {
+        type: String,
+        // required: true
+    }
 }, { versionKey: false });
 
 const User = mongoose.model('User', UserSchema);
