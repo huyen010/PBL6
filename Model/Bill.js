@@ -4,14 +4,14 @@ const Account = require('./Account');
 const { Commune } = require('./Commune');
 const Schema = mongoose.Schema;
 
-const Bill = mongoose.model('Bill',new mongoose.Schema({
-    id_account:{
+const Bill = mongoose.model('Bill', new mongoose.Schema({
+    id_account: {
         type: Schema.Types.ObjectId,
         ref: Account,
         required: true
     },
-    product:[{
-        id_product:{
+    product: [{
+        id_product: {
             type: Schema.Types.ObjectId,
             ref: Product,
             // required: true
@@ -31,28 +31,28 @@ const Bill = mongoose.model('Bill',new mongoose.Schema({
             // required:true
         }
     }],
-    weight:{
+    weight: {
         type: Number,
-        default:0
+        default: 0
     },
-    totalPrice:{
+    totalPrice: {
         type: Number,
-        default:0
+        default: 0
     },
     createAt: {
         type: Date,
         default: Date.now
     },
-    Address:{
+    Address: {
         street: {
             type: String
         },
-        id_commune:{
+        id_commune: {
             type: Schema.Types.ObjectId,
-            ref : Commune
+            ref: Commune
         }
     }
-},{ versionKey: false }));
+}, { versionKey: false }));
 // function validateCart(Cart){
 //     const schema = Joi.object({
 //         name: Joi.string().min(2).max(100).required()

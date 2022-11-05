@@ -30,6 +30,7 @@ const auth = require('./Route/Auth');
 const cart = require('./Route/Cart');
 const comment = require('./Route/Comment');
 const rate = require('./Route/Rate');
+const delivery = require('./Route/Delivery');
 
 mongoose.connect('mongodb+srv://pnquang:quang123123a@cluster0.eenmlxn.mongodb.net/?retryWrites=true&w=majority')
     .then(() => console.log('Connected to MongoDB...'))
@@ -41,6 +42,7 @@ app.use('/api/v1/cms/products', productAdmin);
 app.use('/api/v1/cms/categories', categoryAdmin);
 app.use('/api/v1/cms/stock', stockAdmin);
 app.use('/api/v1/cms/supplies', supplyAdmin);
+app.use('/api/v1/cms/deliveries', delivery);
 app.use('/api/v1/cms/representatives', representAdmin);
 app.use('/api/v1/web/products', productPublic);
 app.use('/api/v1/web/address', address);

@@ -147,6 +147,7 @@ exports.activateHandle = (req, res) => {
                         });
 
                         const fullname = "";
+                        const urlImage = "";
                         const id_account = newAccount.id;
                         const phone = "";
                         const gender = true;
@@ -160,7 +161,8 @@ exports.activateHandle = (req, res) => {
                             id_account,
                             address,
                             phone,
-                            gender
+                            gender,
+                            urlImage
                         });
                         newUser.save();
 
