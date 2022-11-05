@@ -1,15 +1,15 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
+const Account = require('./Account');
 const { Color } = require('./Color');
 const { Product } = require('./Product');
 const { Size } = require('./Size');
-const User = require('./User');
 const Schema = mongoose.Schema;
 
 const Cart = mongoose.model('Cart',new mongoose.Schema({
-    id_user:{
+    id_account:{
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: Account,
         required: true
     },
     product:[{
