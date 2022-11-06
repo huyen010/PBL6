@@ -12,12 +12,15 @@ const RateSchema = new mongoose.Schema({
     },
     rate: {
         type: Number,
+        default:0
     },
     sum: {
         type: Number,
+        default:0
     },
     amount: {
         type: Number,
+        default:0
     }
 }, { versionKey: false })
 

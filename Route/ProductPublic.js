@@ -6,6 +6,8 @@ const cloudinary = require('../Config/storage');
 const { Category } = require('../Model/Category');
 const { Stock } = require('../Model/Stock');
 const { Discount } = require('../Model/Discount');
+const Rate = require('../Model/Rate');
+const Comment = require('../Model/Comment');
 const router = express.Router();
 // router.get('/all/:page',async function(req,res){
 //     const page = 1
@@ -57,7 +59,11 @@ router.get('/detail/:slug',async function(req,res){
             if(!product) return res.status(404).send('Sản phẩm không tồn tại');
             const stock = (await Stock.findOne({receive: {$elemMatch: {id_product: (product._id).toString()}}})).receive;
             rs = stock.filter(stock => stock.id_product == (product._id).toString())[0].receive;
-            return res.status(200).send({product:product,number:rs});
+            console.log(product._id);
+            const rate = await Rate.findOne({id_product:product._id})
+            console.log(rate);
+            const comment = await Comment.find({ id_product: product._id}).populate('id_account',['name'])
+            return res.status(200).send({product: product,rate:rate,comment:comment,number:rs});
     }catch(err){
         return res.status(200).send({product:product,number:rs});
     }

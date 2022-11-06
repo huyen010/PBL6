@@ -1,15 +1,19 @@
 const express = require('express');
 const auth = require('../middleware/auth');
-const Bill = require('../Model/Cart');
+const {Bill} = require('../Model/Bill');
 
 const router = express.Router();
-router.get('/',auth,async function(req,res){
-    let cart = await Cart.findOne({id_account:req.user.id}).populate('product.id_product',['name','price','urlImage','discount'])
-    .populate('product.color',['name']).populate('product.size',['name','description'])
-    let price = 0;
-    for(let i=0; i < cart.product.length; i++){
-
-        price = price + (cart.product[i].id_product.price*(100-cart.product[i].id_product.discount))*cart.product[i].number;
+router.post('/insert',auth,async function(req,res){
+    try{
+        let totalPrice = req.body.shipPrice + req.body.productPrice
+        let bill = new Bill({id_account:req.user.id, product:req.body.product,
+            shipPrice:req.body.shipPrice,productPrice:req.body.shipPrice,totalPrice:totalPrice,
+            createAt:Date.now(),address:req.body.address,id_delivery: req.body.delivery,payment_method:req.body.payment_method})
+        await bill.save();
+        res.status(200).send({message:"success"});
+    }catch(ex){
+        // res.status(400).send(ex);
+        console.log(ex);
     }
-    res.status(400).send({cart:cart,price:price});
 })
+module.exports = router;

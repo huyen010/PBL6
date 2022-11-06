@@ -1,6 +1,6 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
-const Payment = mongoose.model('Payment',new mongoose.Schema({
+const Payment_method = mongoose.model('Payment_method',new mongoose.Schema({
     name:{
         type: String,
         require: true,
@@ -10,4 +10,4 @@ const Payment = mongoose.model('Payment',new mongoose.Schema({
     }
 },{ versionKey: false }));
 
-exports.Payment = Payment;
+exports.Payment_method = Payment_method;

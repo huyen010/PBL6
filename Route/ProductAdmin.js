@@ -7,6 +7,7 @@ const { Category } = require('../Model/Category');
 const auth = require('../middleware/auth');
 const { Discount } = require('../Model/Discount');
 var schedule = require('node-schedule');
+const Rate = require('../Model/Rate');
 
 const router = express.Router();
 router.post('/insert',async function(req,res){
@@ -21,6 +22,8 @@ router.post('/insert',async function(req,res){
                 let product = new Product({name:req.body.name,id_cate: req.body.id_cate, slug: sl})
                 product = await product.save();
                 product.populate('id_cate',['name']);
+                let rate = new Rate({id_product:product._id})
+                rate = await rate.save();
                 res.send(product);
         }catch(err){
                 console.log(err);
@@ -52,25 +55,7 @@ router.get('/detail/:id',auth,async function(req,res){
                 return res.status(404).send('Sản phẩm không tồn tại');
         }
 })
-router.post('/upload-image',upload.array('image'), async(req,res)=>{
-        console.log('1');
-        try{
-                const files = req.files;
-                console.log(files);
-                const urls = [];
-                for (const file of files){
-                        const result = await cloudinary.uploader.upload(file.path,{
-                        public_id: `${Date.now()}`,
-                        resource_type: "auto",
-                        folder: "H3M_Store"
-                        })
-                        urls.push(result.url)
-                }
-                res.status(200).send(urls);
-        }catch(err){
-                res.status(400).send('error')
-        }
-});
+
 router.delete('/delete/:id', async function(req,res){
         try{
                 const product = await Product.findById(req.params.id);
