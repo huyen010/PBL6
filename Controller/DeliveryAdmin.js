@@ -8,17 +8,19 @@ const Delivery = require('../Model/Delivery');
 exports.createDelivery = async(req, res) => {
     const name = (req.body.name);
     const price = (req.body.price);
+    const note = (req.body.note);
     const status = 0;
 
     var newDelivery = new Delivery({
         name: name,
         price: price,
-        status: status
+        status: status,
+        note: note
     });
     newDelivery = await newDelivery.save();
     res.status(200).json({
         message: "success",
-        user: newDelivery,
+        delivery: newDelivery,
         status: true
     });
 }
@@ -28,26 +30,28 @@ exports.updateDelivery = async(req, res) => {
     const name = (req.body.name);
     const price = (req.body.price);
     const status = (req.body.status);
+    const note = (req.body.note);
 
     var delivery = await Delivery.findByIdAndUpdate(req.params.id, {
         name: name,
         price: price,
-        status: status
+        status: status,
+        note: note
     });
 
     delivery = await Delivery.findById(req.params.id);
     res.status(200).json({
         message: "success",
-        user: delivery,
+        delivery: delivery,
         status: true
     });
 }
 
 exports.getDelivery = async function(req, res) {
-    const delivery = await Delivery.find()
+    const delivery = await Delivery.find({ status: 0 })
     res.status(200).json({
         message: "success",
-        comment: delivery,
+        delivery: delivery,
         status: true
     });
 }

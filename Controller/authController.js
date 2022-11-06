@@ -26,7 +26,7 @@ exports.registerHandle = (req, res) => {
     if (!name || !email || !password || !password2) {
         res.status(400).json({
             message: 'Please enter all fields',
-            state: false
+            status: false
         });
     }
 
@@ -34,7 +34,7 @@ exports.registerHandle = (req, res) => {
     if (password != password2) {
         res.status(400).json({
             message: 'Passwords do not match',
-            state: false
+            status: false
         });
     }
 
@@ -42,13 +42,13 @@ exports.registerHandle = (req, res) => {
     if (password.length < 8) {
         res.status(400).json({
             message: 'Password must be at least 8 characters',
-            state: false
+            status: false
         });
     }
     if (false) {
         res.status(400).json({
             message: 'Error',
-            state: false
+            status: false
         });
     } else {
         //------------ Validation passed ------------//
@@ -56,7 +56,7 @@ exports.registerHandle = (req, res) => {
             if (account) {
                 res.status(400).json({
                     message: 'Email ID already registered',
-                    state: false
+                    status: false
                 });
             } else {
                 const oauth2Client = new OAuth2(
@@ -105,7 +105,7 @@ exports.registerHandle = (req, res) => {
 
                         res.status(400).json({
                             message: 'Something went wrong on our end. Please register again.',
-                            state: false
+                            status: false
                         });
                     } else {
                         console.log('Mail sent : %s', info.response);
@@ -205,7 +205,7 @@ exports.forgotPassword = (req, res) => {
     if (!email) {
         res.status(400).json({
             message: 'Please enter an email ID!',
-            state: false
+            status: false
         });
     }
 
@@ -216,7 +216,7 @@ exports.forgotPassword = (req, res) => {
                 //------------ User already exists ------------//
                 res.status(400).json({
                     message: 'Account with Email ID does not exist!',
-                    state: false
+                    status: false
                 });
 
             } else {
@@ -249,7 +249,7 @@ exports.forgotPassword = (req, res) => {
                                 if (err) {
                                     res.status(400).json({
                                         message: 'Error resetting password!',
-                                        state: false
+                                        status: false
                                     });
                                 }
                             });
@@ -262,7 +262,7 @@ exports.forgotPassword = (req, res) => {
                     if (err) {
                         res.status(400).json({
                             message: 'Error resetting password!',
-                            state: false
+                            status: false
                         });
                     } else {
                         const transporter = nodemailer.createTransport({
@@ -290,7 +290,7 @@ exports.forgotPassword = (req, res) => {
                                 console.log(error);
                                 res.status(400).json({
                                     message: 'Something went wrong on our end. Please try again later.',
-                                    state: false
+                                    status: false
                                 });
                                 // res.redirect('/auth/forgot');
                             } else {
@@ -318,7 +318,7 @@ exports.resetPassword = (req, res) => {
     if (!password || !password2) {
         res.status(400).json({
             message: 'Please enter all fields.',
-            state: false
+            status: false
         });
     }
 
@@ -326,7 +326,7 @@ exports.resetPassword = (req, res) => {
     else if (password.length < 8) {
         res.status(400).json({
             message: 'Password must be at least 8 characters.',
-            state: false
+            status: false
         });
     }
 
@@ -334,7 +334,7 @@ exports.resetPassword = (req, res) => {
     else if (password != password2) {
         res.status(400).json({
             message: 'Passwords do not match.',
-            state: false
+            status: false
         });
     } else {
         bcryptjs.genSalt(10, (err, salt) => {
@@ -347,7 +347,7 @@ exports.resetPassword = (req, res) => {
                         if (err) {
                             res.status(400).json({
                                 message: 'Error resetting password!',
-                                state: false
+                                status: false
                             });
                         } else {
                             res.status(200).json({
@@ -381,7 +381,7 @@ exports.login = (req, res) => {
 
                         res.status(400).json({
                             message: 'Email or password is incorrect!',
-                            state: false
+                            status: false
                         });
                     }
 
@@ -389,7 +389,7 @@ exports.login = (req, res) => {
                     res.status(400).json({
                         message: 'Email or password is incorrect!',
                         token: "",
-                        state: false
+                        status: false
                     });
                 }
             })
@@ -397,14 +397,14 @@ exports.login = (req, res) => {
             res.status(400).json({
                 message: 'Add proper parameter first!',
                 token: "",
-                state: false
+                status: false
             });
         }
     } catch (e) {
         res.status(400).json({
             message: 'Something went wrong!',
             token: "",
-            state: false
+            status: false
         });
     }
 }
@@ -413,7 +413,7 @@ function checkUserAndGenerateToken(data, req, res) {
     jwt.sign({ Account: data.username, id: data._id }, PRIVATE_KEY, { expiresIn: '1d' }, (err, token) => {
         if (err) {
             res.status(400).json({
-                state: false,
+                status: false,
                 message: err,
             });
         } else {
