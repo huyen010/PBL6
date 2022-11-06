@@ -34,6 +34,10 @@ const InforSchema = new mongoose.Schema({
         // default: Date.now(),
     },
     card: [{
+        bank: {
+            type: String,
+            // required:true
+        },
         name: {
             type: String,
             // required:true
