@@ -12,7 +12,7 @@ router.post('/', deliveryAdmin.createDelivery);
 router.put('/:id', auth, deliveryAdmin.updateDelivery);
 
 //------------ get ------------//
-router.get('/', auth, deliveryAdmin.getDelivery);
+router.get('/', deliveryAdmin.getDelivery);
 
 
 module.exports = router;
