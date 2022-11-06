@@ -18,7 +18,7 @@
     "joi": "^17.7.0",
     "joi-objectid": "^4.0.2",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.6.5",
+    "mongoose": "^6.7.1",
     "multer": "^1.4.5-lts.1",
     "multer-storage-cloudinary": "^4.0.0",
     "node-schedule": "^2.1.0",

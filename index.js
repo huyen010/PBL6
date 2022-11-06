@@ -31,6 +31,7 @@ const cart = require('./Route/Cart');
 const comment = require('./Route/Comment');
 const rate = require('./Route/Rate');
 const delivery = require('./Route/Delivery');
+const infor = require('./Route/Infor');
 
 mongoose.connect('mongodb+srv://pnquang:quang123123a@cluster0.eenmlxn.mongodb.net/?retryWrites=true&w=majority')
     .then(() => console.log('Connected to MongoDB...'))
@@ -51,5 +52,6 @@ app.use('/api/v1/web/auth', auth);
 app.use('/api/v1/web/cart', cart);
 app.use('/api/v1/web/comment', comment);
 app.use('/api/v1/web/rate', rate);
+app.use('/api/v1/web/infor', infor);
 const port = process.env.PORT || 3002;
 http.listen(port, () => console.log('Socket listening on port...' + port));
