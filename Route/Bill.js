@@ -1,7 +1,7 @@
 const express = require('express');
 const auth = require('../middleware/auth');
 const {Bill} = require('../Model/Bill');
-
+const { Status } = require('../Model/Status');
 const router = express.Router();
 router.post('/insert',auth,async function(req,res){
     try{
