@@ -14,10 +14,6 @@ const Product = mongoose.model('Product', new mongoose.Schema({
         minlength:3,
         maxlength: 200,
     },
-    rate:{
-        type: Number,
-        default: 0,
-    },
     sellDay:{
         type: Date,
         // default: Date.now(),

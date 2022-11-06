@@ -1,7 +1,12 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
 const Account = require('./Account');
+const { Color } = require('./Color');
 const { Commune } = require('./Commune');
+const Delivery = require('./Delivery');
+const { Payment_method } = require('./Payment_method');
+const { Product } = require('./Product');
+const { Size } = require('./Size');
 const Schema = mongoose.Schema;
 
 const Bill = mongoose.model('Bill', new mongoose.Schema({
@@ -13,24 +18,35 @@ const Bill = mongoose.model('Bill', new mongoose.Schema({
     product: [{
         id_product: {
             type: Schema.Types.ObjectId,
-            ref: Product,
+            ref: Product
             // required: true
         },
         size: {
             type: Schema.Types.ObjectId,
-            ref: Size,
+            ref: Size
             // required: true
         },
         color: {
             type: Schema.Types.ObjectId,
-            ref: Color,
+            ref: Color
             // required: true
         },
         number: {
             type: Number,
             // required:true
+        },
+        price:{
+            type:Number
         }
     }],
+    payment_method: {
+        type: Schema.Types.ObjectId,
+        ref: Payment_method
+    },
+    delivery:{
+        type: Schema.Types.ObjectId,
+        ref: Delivery
+    },
     weight: {
         type: Number,
         default: 0
@@ -49,9 +65,8 @@ const Bill = mongoose.model('Bill', new mongoose.Schema({
     },
     createAt: {
         type: Date,
-        default: Date.now
     },
-    Address: {
+    address: {
         street: {
             type: String
         },
@@ -59,7 +74,7 @@ const Bill = mongoose.model('Bill', new mongoose.Schema({
             type: Schema.Types.ObjectId,
             ref: Commune
         }
-    }
+    },
 }, { versionKey: false }));
 // function validateCart(Cart){
 //     const schema = Joi.object({
@@ -67,5 +82,5 @@ const Bill = mongoose.model('Bill', new mongoose.Schema({
 //     });
 //     return schema.validate(Cart)
 // }
-exports.Cart = Cart;
+exports.Bill = Bill;
 // exports.validateCart = validateCart;

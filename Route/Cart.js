@@ -9,7 +9,7 @@ router.get('/',auth,async function(req,res){
     let price = 0;
     for(let i=0; i < cart.product.length; i++){
 
-        price = price + (cart.product[i].id_product.price*(100-cart.product[i].id_product.discount))*cart.product[i].number;
+        price = price + (cart.product[i].id_product.price*(1-cart.product[i].id_product.discount)/100)*cart.product[i].number;
     }
     res.status(200).send({cart:cart,price:price});
 })

@@ -17,7 +17,7 @@ const Cart = mongoose.model('Cart',new mongoose.Schema({
             type: Schema.Types.ObjectId,
             ref: Product,
             // required: true
-        },
+        }, 
         size: {
             type: Schema.Types.ObjectId,
             ref: Size,

@@ -6,7 +6,7 @@ const router = express.Router();
 const commentController = require('../Controller/commentController');
 
 //------------ create ------------//
-router.post('/', auth, commentController.createComment);
+router.post('/', auth,  commentController.createComment);
 
 //------------ update ------------//
 router.put('/:id', auth, commentController.updateComment);
