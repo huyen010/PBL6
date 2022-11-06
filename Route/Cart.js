@@ -44,12 +44,13 @@ router.put('/update',auth, async function(req,res){
         })
     const cartAfter = await Cart.findOne({id_account:req.user.id}).populate('product.id_product',['name','price','urlImage','discount']).populate('product.color',['name']).populate('product.size',['name','description'])
     let price = 0;
-    for(let i=0; i < cart.product.length; i++){
-        price = price + (cart.product[i].id_product.price*(100-cart.product[i].id_product.discount))*cart.product[i].number;
+    for(let i=0; i < cartAfter.product.length; i++){
+        price = price + (cartAfter.product[i].id_product.price*(100-cartAfter.product[i].id_product.discount))*cartAfter.product[i].number;
     }
     res.status(200).send({cart:cartAfter,price:price});
 })
 router.delete('/delete/:id',auth,async function(req,res){
+    console.log(req.params.id);
     try{
         let cart = await Cart.updateOne({"id_account":req.user.id},
         {$pull: {
@@ -58,8 +59,8 @@ router.delete('/delete/:id',auth,async function(req,res){
         })
         const cartAfter = await Cart.findOne({id_account:req.user.id}).populate('product.id_product',['name','price','urlImage','discount']).populate('product.color',['name']).populate('product.size',['name','description'])
         let price = 0;
-        for(let i=0; i < cart.product.length; i++){
-            price = price + (cart.product[i].id_product.price*(100-cart.product[i].id_product.discount))*cart.product[i].number;
+        for(let i=0; i < cartAfter.product.length; i++){
+            price = price + (cartAfter.product[i].id_product.price*(100-cartAfter.product[i].id_product.discount))*cartAfter.product[i].number;
         }
         res.status(200).send({cart:cartAfter,price:price});
     }

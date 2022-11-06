@@ -39,6 +39,14 @@ const Bill = mongoose.model('Bill', new mongoose.Schema({
         type: Number,
         default: 0
     },
+    productPrice:{
+        type: Number,
+        default:0
+    },
+    shipPrice:{
+        type: Number,
+        default:0
+    },
     createAt: {
         type: Date,
         default: Date.now

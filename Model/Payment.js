@@ -1,6 +1,6 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
-const Category = mongoose.model('Category',new mongoose.Schema({
+const Payment = mongoose.model('Payment',new mongoose.Schema({
     name:{
         type: String,
         require: true,
@@ -9,11 +9,5 @@ const Category = mongoose.model('Category',new mongoose.Schema({
         unique: true
     }
 },{ versionKey: false }));
-function validateCate(category){
-    const schema = Joi.object({
-        name: Joi.string().min(2).max(100).required()
-    });
-    return schema.validate(category)
-}
-exports.Category = Category;
-exports.validateCate = validateCate;
+
+exports.Payment = Payment;
