@@ -22,7 +22,7 @@ router.post('/insert',async function(req,res){
                 console.log(listS);
                 const listC = await Color.find({ "_id": { "$in": arrColor } });
                 console.log(listC);
-                await Product.findByIdAndUpdate(req.body.receive[i].id_product,{ $push: { size: listS,color:listC}, status:"Chưa mở bán"})
+                await Product.findByIdAndUpdate(req.body.receive[i].id_product,{ $push: { size: listS,color:listC}})
         }
         await supply.save();
         res.send(stock);

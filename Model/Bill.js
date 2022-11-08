@@ -66,15 +66,33 @@ const Bill = mongoose.model('Bill', new mongoose.Schema({
     createAt: {
         type: Date,
     },
-    address: {
-        street: {
-            type: String
+    info: {
+        address: {
+            street: {
+                type: String
+            },
+            id_commune: {
+                type: Schema.Types.ObjectId,
+                ref: Commune
+            },
+            id_district: {
+                type: Schema.Types.ObjectId,
+                ref: Commune
+            },
+            id_province: {
+                type: Schema.Types.ObjectId,
+                ref: Commune
+            }
         },
-        id_commune: {
-            type: Schema.Types.ObjectId,
-            ref: Commune
+        name: {
+            type : String,
+            required: true
+        },
+        phone:{
+            type: String,
+            required:true
         }
-    },
+    }
 }, { versionKey: false }));
 // function validateCart(Cart){
 //     const schema = Joi.object({
