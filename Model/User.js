@@ -2,8 +2,6 @@ const mongoose = require('mongoose');
 const Joi = require('joi');
 const Schema = mongoose.Schema;
 const Account = require('./Account');
-const { Commune } = require('./Commune');
-// const Account = require('../models/Account');
 Joi.objectId = require('joi-objectid')(Joi);
 
 //------------ User Schema ------------//
@@ -14,15 +12,6 @@ const UserSchema = new mongoose.Schema({
     id_account: {
         type: Schema.Types.ObjectId,
         ref: Account
-    },
-    address: {
-        id_commune: {
-            type: Schema.Types.ObjectId,
-            ref: Commune
-        },
-        street: {
-            type: String,
-        }
     },
     phone: {
         type: String,

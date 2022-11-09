@@ -151,15 +151,10 @@ exports.activateHandle = (req, res) => {
                         const id_account = newAccount.id;
                         const phone = "";
                         const gender = true;
-                        const address = {
-                            id_commune: "",
-                            street: ""
-                        };
 
                         const newUser = new User({
                             fullname,
                             id_account,
-                            address,
                             phone,
                             gender,
                             urlImage

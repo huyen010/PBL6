@@ -33,6 +33,7 @@ const bill = require('./Route/Bill');
 const rate = require('./Route/Rate');
 const infor = require('./Route/Infor');
 const delivery = require('./Route/Delivery');
+const inforAddress = require('./Route/InforAddress');
 
 mongoose.connect('mongodb+srv://pnquang:quang123123a@cluster0.eenmlxn.mongodb.net/?retryWrites=true&w=majority')
     .then(() => console.log('Connected to MongoDB...'))
@@ -55,6 +56,7 @@ app.use('/api/v1/web/comment', comment);
 app.use('/api/v1/web/rate', rate);
 app.use('/api/v1/web/bill', bill);
 app.use('/api/v1/web/infor', infor);
+app.use('/api/v1/web/inforaddress', inforAddress);
 
 const port = process.env.PORT || 3002;
 http.listen(port, () => console.log('Socket listening on port...' + port));
