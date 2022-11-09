@@ -7,13 +7,10 @@ router.get('/', auth, async function(req, res) {
     let cart = await Cart.findOne({ id_account: req.user.id }).populate('product.id_product', ['name', 'price', 'urlImage', 'discount'])
         .populate('product.color', ['name']).populate('product.size', ['name', 'description'])
     let price = 0;
-    // for(let i=0; i < cart.product.length; i++){
-
-    //     price = price + (cart.product[i].id_product.price*(1-cart.product[i].id_product.discount)/100)*cart.product[i].number;
-    // }
     for (let i = 0; i < cart.product.length; i++) {
 
         price = price + (cart.product[i].id_product.price * (1 - cart.product[i].id_product.discount / 100)) * cart.product[i].number;
+
     }
     res.status(200).send({ cart: cart, price: price });
 })
@@ -60,9 +57,6 @@ router.put('/update', auth, async function(req, res) {
     })
     const cartAfter = await Cart.findOne({ id_account: req.user.id }).populate('product.id_product', ['name', 'price', 'urlImage', 'discount']).populate('product.color', ['name']).populate('product.size', ['name', 'description'])
     let price = 0;
-    // for (let i = 0; i < cartAfter.product.length; i++) {
-    //     price = price + (cartAfter.product[i].id_product.price * (100 - cartAfter.product[i].id_product.discount)) * cartAfter.product[i].number;
-    // }
     for (let i = 0; i < cartAfter.product.length; i++) {
         price = price + (cartAfter.product[i].id_product.price * (1 - cartAfter.product[i].id_product.discount / 100)) * cartAfter.product[i].number;
     }
@@ -79,7 +73,8 @@ router.delete('/delete/:id', auth, async function(req, res) {
         const cartAfter = await Cart.findOne({ id_account: req.user.id }).populate('product.id_product', ['name', 'price', 'urlImage', 'discount']).populate('product.color', ['name']).populate('product.size', ['name', 'description'])
         let price = 0;
         for (let i = 0; i < cartAfter.product.length; i++) {
-            price = price + (cartAfter.product[i].id_product.price * (100 - cartAfter.product[i].id_product.discount)) * cartAfter.product[i].number;
+            price = price + (cartAfter.product[i].id_product.price * (1 - cartAfter.product[i].id_product.discount / 100)) * cartAfter.product[i].number;
+
         }
         res.status(200).send({ cart: cartAfter, price: price });
     } catch (ex) {
