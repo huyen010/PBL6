@@ -2,36 +2,33 @@ const InforAddress = require('../Model/InforAddress');
 
 
 //------------ Create ------------//
-exports.createInforAddress = (req, res) => {
+exports.createInforAddress = async(req, res) => {
     const name = (req.body.name);
     const id_account = req.user.id;
     const phone = (req.body.phone);
     const address = (req.body.address);
     const role = (req.body.role);
-    InforAddress.findOne({ role: role }).then(inforAddress => {
-        if (inforAddress) {
-            res.status(400).json({
-                message: 'Role is already exist',
-                status: false
-            });
-        } else {
-            const newInforAddress = new InforAddress({
-                name,
-                id_account,
-                address,
-                phone,
-                role
-            });
-            newInforAddress.save();
+    if (role == true) {
+        var inforAddress = await InforAddress.findOne({ role: role });
+        var id = inforAddress._id;
+        inforAddress = await InforAddress.findByIdAndUpdate(id, { role: false });
+    }
+    const newInforAddress = new InforAddress({
+        name,
+        id_account,
+        address,
+        phone,
+        role
+    });
+    newInforAddress.save();
 
-            res.status(200).json({
-                message: "success",
-                inforAddress: newInforAddress,
-                status: true
-            });
-        }
-    })
+    res.status(200).json({
+        message: "success",
+        inforAddress: newInforAddress,
+        status: true
+    });
 }
+
 
 
 //------------ update ------------//
@@ -41,42 +38,38 @@ exports.updateInforAddress = async(req, res) => {
     const role = (req.body.role);
     var address = (req.body.address);
 
-    InforAddress.findOne({ role: role }).then(inforAddress => {
-        if (inforAddress) {
-            res.status(400).json({
-                message: 'Role is already exist',
-                status: false
-            });
-        } else {
-            const id_account = req.user.id;
-            var inforAddress = InforAddress.findOne({ id_account: id_account });
-            var id = inforAddress.id;
+    if (role == true) {
+        var inforAddress = await InforAddress.findOne({ role: role });
+        var id = inforAddress._id;
+        inforAddress = await InforAddress.findByIdAndUpdate(id, { role: false });
+    }
+    const id_account = req.user.id;
+    var inforAddress = await InforAddress.findOne({ id_account: id_account });
+    var id = inforAddress.id;
 
-            inforAddress = InforAddress.findByIdAndUpdate(id, { name: name, phone: phone, address: address, role: role });
+    inforAddress = await InforAddress.findByIdAndUpdate(id, { name: name, phone: phone, address: address, role: role });
 
-            inforAddress = InforAddress.findOne({ id_account: id_account });
+    inforAddress = await InforAddress.findOne({ id_account: id_account });
 
-            if (!inforAddress) {
-                res.status(404).json({
-                    message: 'Not availble',
-                    status: false
-                });
-            } else {
-                res.status(200).json({
-                    message: 'success',
-                    user: inforAddress,
-                    status: true
-                });
-            }
-        }
-    })
+    if (!inforAddress) {
+        res.status(404).json({
+            message: 'Not availble',
+            status: false
+        });
+    } else {
+        res.status(200).json({
+            message: "success",
+            inforAddress: inforAddress,
+            status: true
+        });
+    }
 }
 
 
 //------------ get user ------------//
 exports.getInforAddresss = async(req, res) => {
     const id_account = req.user.id;
-    var inforAddress = await InforAddress.find({ id_account: id_account });
+    var inforAddress = await InforAddress.find({ id_account: id_account }).populate('address.id_province', ['name', 'region']).populate('address.id_district', ['name']).populate('address.id_commune', ['name']);
     if (!inforAddress) {
         res.status(404).json({
             message: 'Not availble',
