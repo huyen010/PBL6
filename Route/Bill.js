@@ -25,7 +25,7 @@ router.post('/insert',auth,async function(req,res){
         let totalPrice = req.body.shipPrice + req.body.productPrice
         let bill = new Bill({id_account:req.user.id, product:req.body.product,
             shipPrice:req.body.shipPrice,productPrice:req.body.shipPrice,totalPrice:totalPrice,
-            createAt:Date.now(),info:req.body.info,id_delivery: req.body.delivery,payment_method:req.body.payment_method})
+            createAt:Date.now(),id_info:req.body.id_info,id_delivery: req.body.delivery,payment_method:req.body.payment_method})
         await bill.save();
         bill.product.forEach(async function(product){
             await UpdateStock(product);
@@ -45,10 +45,12 @@ router.post('/insert',auth,async function(req,res){
 router.get('/all',auth,async function(req,res){
     try{
         let orderhistory = await Order_history.find({}).populate({path: 'id_bill',
-        match: { id_account: req.user.id}, select: ['info','product','totalPrice','createAt'],
+        match: { id_account: req.user.id}, select: ['id_info','product','totalPrice','createAt'],
         populate: [{path:'product.id_product',select:'name'},
-        {path:'product.size',select:'name'},{path:'product.color',select:'name'},{path:'info.address.id_commune'
-        ,select:'name'}]}).populate('history.id_status',['name'])
+        {path:'product.size',select:'name'},{path:'product.color',select:'name'},{path:'id_info'
+        ,select:['name','phone','address'],populate:[{path:'address.id_province',select:'name'},
+        {path:'address.id_district',select:'name'}, {path:'address.id_commune',select:'name'}]}]}).
+        populate('history.id_status',['name'])
         res.status(200).send({message:"success",bills:orderhistory});
     }catch(ex){
         res.status(400).send({message:"error",status:false});
