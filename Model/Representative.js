@@ -21,9 +21,8 @@ const Representative = mongoose.model('Representative', new mongoose.Schema({
         minlength:3,
         maxlength:50
     },
-    image:{
-        type: [String],
-        required:true
+    image : {
+        type: String
     }
 },{versionKey: false }));
 function validateReprentative(representative){

@@ -5,7 +5,7 @@ const { District } = require('../Model/District');
 const { Province } = require('../Model/Province');
 
 router.get('/province',async function(req,res){
-    const province = await Province.find()
+    const province = await Province.find({}) 
     return res.send(province);
 })
 router.get('/district/:province',async function(req,res){

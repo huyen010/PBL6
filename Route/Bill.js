@@ -46,8 +46,9 @@ router.get('/all',auth,async function(req,res){
     try{
         let orderhistory = await Order_history.find({}).populate({path: 'id_bill',
         match: { id_account: req.user.id}, select: ['info','product','totalPrice','createAt'],
-        populate: [{path:'product.id_product',select:'name'},{path:'product.size',select:'name'}
-        ,{path:'product.color',select:'name'},{path:'info.address.id_commune',select:'name'}]})
+        populate: [{path:'product.id_product',select:'name'},
+        {path:'product.size',select:'name'},{path:'product.color',select:'name'},{path:'info.address.id_commune'
+        ,select:'name'}]}).populate('history.id_status',['name'])
         res.status(200).send({message:"success",bills:orderhistory});
     }catch(ex){
         res.status(400).send({message:"error",status:false});
