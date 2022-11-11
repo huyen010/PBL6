@@ -147,19 +147,14 @@ exports.activateHandle = (req, res) => {
                         });
 
                         const fullname = "";
-                        const urlImage = "";
+                        const urlImage = "https://louisville.edu/enrollmentmanagement/images/person-icon/image";
                         const id_account = newAccount.id;
                         const phone = "";
                         const gender = true;
-                        const address = {
-                            id_commune: "",
-                            street: ""
-                        };
 
                         const newUser = new User({
                             fullname,
                             id_account,
-                            address,
                             phone,
                             gender,
                             urlImage
