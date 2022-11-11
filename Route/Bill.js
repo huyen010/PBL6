@@ -57,6 +57,34 @@ router.get('/all',auth,async function(req,res){
         console.log(ex);
     }
 })
+router.get('/type/:type',auth,async function(req,res){
+    try{
+        let orderhistory = await Order_history.find({history:{ $size: req.params.type }}).populate({path: 'id_bill',
+        match: { id_account: req.user.id}, select: ['id_info','product','totalPrice','createAt'],
+        populate: [{path:'product.id_product',select:'name'},
+        {path:'product.size',select:'name'},{path:'product.color',select:'name'},{path:'id_info'
+        ,select:['name','phone','address'],populate:[{path:'address.id_province',select:'name'},
+        {path:'address.id_district',select:'name'}, {path:'address.id_commune',select:'name'}]}]}).
+        populate('history.id_status',['name'])
+        res.status(200).send({message:"success",bill:orderhistory});
+    }catch(ex){
+        res.status(400).send({message:"error",status:false});
+    }
+})
+router.get('/detail/:id',auth,async function(req,res){
+    try{
+        let orderhistory = await Order_history.findById(req.params.id).populate({path: 'id_bill',
+        match: { id_account: req.user.id}, select: ['id_info','product','totalPrice','createAt'],
+        populate: [{path:'product.id_product',select:'name'},
+        {path:'product.size',select:'name'},{path:'product.color',select:'name'},{path:'id_info'
+        ,select:['name','phone','address'],populate:[{path:'address.id_province',select:'name'},
+        {path:'address.id_district',select:'name'}, {path:'address.id_commune',select:'name'}]}]}).
+        populate('history.id_status',['name'])
+        res.status(200).send({message:"success",bill:orderhistory});
+    }catch(ex){
+        res.status(400).send({message:"error",status:false});
+    }
+})
 // router.post('/test',async function(req,res){
 //     try{
 //         let stock = await Stock.find({'remain.id_product':req.body.id_product}).sort({'dateReceive':-1})
