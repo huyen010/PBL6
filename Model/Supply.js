@@ -39,6 +39,10 @@ const Supply = mongoose.model('Supply',new mongoose.Schema({
         ref: Product,
         // default: []
     }],
+    image:{
+        type: String,
+        required:true
+    }
 },{versionKey: false }));
 function validateSupply(supply){
     const schema = Joi.object({

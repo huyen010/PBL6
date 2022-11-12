@@ -4,6 +4,7 @@ const Account = require('./Account');
 const { Color } = require('./Color');
 const { Commune } = require('./Commune');
 const Delivery = require('./Delivery');
+const InforAddress = require('./InforAddress');
 const { Payment_method } = require('./Payment_method');
 const { Product } = require('./Product');
 const { Size } = require('./Size');
@@ -66,32 +67,9 @@ const Bill = mongoose.model('Bill', new mongoose.Schema({
     createAt: {
         type: Date,
     },
-    info: {
-        address: {
-            street: {
-                type: String
-            },
-            id_commune: {
-                type: Schema.Types.ObjectId,
-                ref: Commune
-            },
-            id_district: {
-                type: Schema.Types.ObjectId,
-                ref: Commune
-            },
-            id_province: {
-                type: Schema.Types.ObjectId,
-                ref: Commune
-            }
-        },
-        name: {
-            type : String,
-            required: true
-        },
-        phone:{
-            type: String,
-            required:true
-        }
+    id_info: {
+        type: Schema.Types.ObjectId,
+        ref: InforAddress
     }
 }, { versionKey: false }));
 // function validateCart(Cart){

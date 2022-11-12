@@ -4,10 +4,8 @@ const { upload } = require('../Config/multer');
 const cloudinary = require('../Config/storage');
 
 router.post('/upload-image',upload.array('image'), async(req,res)=>{
-    console.log('1');
     try{
             const files = req.files;
-            console.log(files);
             const urls = [];
             for (const file of files){
                     const result = await cloudinary.uploader.upload(file.path,{
