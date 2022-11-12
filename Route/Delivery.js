@@ -1,15 +1,16 @@
 const express = require('express');
 const auth = require('../middleware/auth');
+const staffOrAdmin = require('../middleware/staffOrAdmin');
 const router = express.Router();
 
 //------------ Importing Controllers ------------//
 const deliveryAdmin = require('../Controller/DeliveryAdmin');
 
 //------------ create ------------//
-router.post('/', deliveryAdmin.createDelivery);
+router.post('/', staffOrAdmin, deliveryAdmin.createDelivery);
 
 //------------ update ------------//
-router.put('/:id', auth, deliveryAdmin.updateDelivery);
+router.put('/:id', staffOrAdmin, deliveryAdmin.updateDelivery);
 
 //------------ get ------------//
 router.get('/', deliveryAdmin.getDelivery);
