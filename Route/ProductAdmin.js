@@ -10,13 +10,25 @@ var schedule = require('node-schedule');
 const Rate = require('../Model/Rate');
 
 const router = express.Router();
-router.post('/insert', async function(req, res) {
-    try {
-        const { error } = validateNewProduct(req.body);
-        if (!error) return res.status(400).send(error.details[0].message)
-        const cate = await Category.findById(req.body.id_cate)
-        if (!cate) {
-            return res.status(404).send('Danh mục không tồn tại')
+
+router.post('/insert',async function(req,res){
+        try{
+                const{error} = validateNewProduct(req.body);
+                if(!error) return res.status(400).send(error.details[0].message)
+                const cate = await Category.findById(req.body.id_cate)
+                if(!cate){
+                        return res.status(404).send('Danh mục không tồn tại')
+                }
+                const sl = await SlugF(req.body.name,1)
+                let product = new Product({name:req.body.name,id_cate: req.body.id_cate, slug: sl,price:0})
+                product = await product.save();
+                product.populate('id_cate',['name']);
+                let rate = new Rate({id_product:product._id})
+                rate = await rate.save();
+                res.send(product);
+        }catch(err){
+                console.log(err);
+
         }
         const sl = await SlugF(req.body.name, 1)
         let product = new Product({ name: req.body.name, id_cate: req.body.id_cate, slug: sl })
@@ -76,20 +88,44 @@ router.delete('/delete/:id', async function(req, res) {
         return res.status(400).send('Error');
     }
 })
-router.get('/:slug/:search/:page', async function(req, res) {
-    const page = req.params.page;
-    const slug = req.params.slug;
-    const search = req.params.search;
-    try {
-        let products = undefined;
-        if (slug.localeCompare('all') == 0) {
-            products = await Product.find({ name: { $regex: '.*' + search + '.*', $options: 'i' } }).limit(16).skip((page - 1) * 16)
-        } else {
-            console.log(search);
-            const cate = await Category.findOne({ slug: req.params.slug })
-            products = await Product.find({ id_cate: cate._id, name: { $regex: '.*' + search + '.*', $options: 'i' } }).limit(16).skip((page - 1) * 16)
+
+router.get('/:slug/:search/:page',async function(req,res){
+        const page = req.params.page;
+        const slug = req.params.slug;
+        const search = req.params.search;
+        try{
+                let products = undefined;
+                if(slug.localeCompare('all')==0){
+                        products = await Product.find({name:{ $regex: '.*' + search + '.*',$options: 'i' }}).limit(16).skip((page-1)*16)
+                }else{
+                        console.log(search);
+                        const cate = await Category.findOne({slug:req.params.slug})
+                        products = await Product.find({id_cate:cate._id, name:{ $regex: '.*' + search + '.*',$options: 'i' }}).limit(16).skip((page-1)*16)
+                }
+                res.send(products)
         }
-        res.send(products)
+        catch(ex){
+                res.status(400).send({message:'error'})
+        }
+        })
+router.get('/:slug/:page',async function(req,res){
+        const page = req.params.page;
+        const slug = req.params.slug;
+        let count = 0;
+        try{
+                let products = undefined;
+                if(slug.localeCompare('all')==0){
+                        products = await Product.find().limit(10).skip((page-1)*10).select({name:1,status:1,sold:1,id_cate:1,
+                        price:1}).populate('id_cate',['name']).sort({'_id':-1});
+                        count = await Product.countDocuments();
+                }else{
+                        const cate = await Category.findOne({slug:req.params.slug})
+                        products = await Product.find({id_cate:cate._id}).limit(10).skip((page-1)*10).sort({'_id':-1});
+                        count = await Product.countDocuments({id_cate:cate._id});
+                }
+                count = parseInt((count-1)/10) + 1
+                res.send({products:products,count:count})
+       
     } catch (ex) {
         res.status(400).send({ message: 'error' })
     }
@@ -110,6 +146,7 @@ router.get('/:slug/:page', async function(req, res) {
         res.status(404).send('Not availble')
     }
 })
+
 router.post('/discount', async function(req, res) {
         try {
             let dc = new Discount({ percent: req.body.percent, id_product: req.body.id_product, time: req.body.time });
@@ -131,4 +168,5 @@ router.post('/discount', async function(req, res) {
     //         const dc = Discount.findOne({id_product: {"$in": req.params.id}})
     //         console.log(dc.percent);
     // })
+
 module.exports = router;
