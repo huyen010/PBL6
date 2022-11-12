@@ -45,9 +45,9 @@ router.post('/insert',auth,async function(req,res){
 router.get('/all',auth,async function(req,res){
     try{
         let orderhistory = await Order_history.find({}).populate({path: 'id_bill',
-        match: { id_account: req.user.id}, select: ['id_info','product','totalPrice','createAt'],
-        populate: [{path:'product.id_product',select:'name'},
-        {path:'product.size',select:'name'},{path:'product.color',select:'name'},{path:'id_info'
+        match: { id_account: req.user.id}, select: ['id_info','product','totalPrice','createAt','productPrice','shipPrice','payment_method'],
+        populate: [{path:'product.id_product',select:['name','urlImage']},
+        {path:'product.size',select:'name'},{path:'product.color',select:'name'},{path:'payment_method',select:'name'},{path:'id_info'
         ,select:['name','phone','address'],populate:[{path:'address.id_province',select:'name'},
         {path:'address.id_district',select:'name'}, {path:'address.id_commune',select:'name'}]}]}).
         populate('history.id_status',['name'])
@@ -60,9 +60,9 @@ router.get('/all',auth,async function(req,res){
 router.get('/type/:type',auth,async function(req,res){
     try{
         let orderhistory = await Order_history.find({history:{ $size: req.params.type }}).populate({path: 'id_bill',
-        match: { id_account: req.user.id}, select: ['id_info','product','totalPrice','createAt'],
-        populate: [{path:'product.id_product',select:'name'},
-        {path:'product.size',select:'name'},{path:'product.color',select:'name'},{path:'id_info'
+        match: { id_account: req.user.id}, select: ['id_info','product','totalPrice','createAt','productPrice','shipPrice','payment_method'],
+        populate: [{path:'product.id_product',select:['name','urlImage']},
+        {path:'product.size',select:'name'},{path:'product.color',select:'name'},{path:'payment_method',select:'name'},{path:'id_info'
         ,select:['name','phone','address'],populate:[{path:'address.id_province',select:'name'},
         {path:'address.id_district',select:'name'}, {path:'address.id_commune',select:'name'}]}]}).
         populate('history.id_status',['name'])
@@ -74,9 +74,9 @@ router.get('/type/:type',auth,async function(req,res){
 router.get('/detail/:id',auth,async function(req,res){
     try{
         let orderhistory = await Order_history.findById(req.params.id).populate({path: 'id_bill',
-        match: { id_account: req.user.id}, select: ['id_info','product','totalPrice','createAt'],
-        populate: [{path:'product.id_product',select:'name'},
-        {path:'product.size',select:'name'},{path:'product.color',select:'name'},{path:'id_info'
+        match: { id_account: req.user.id}, select: ['id_info','product','totalPrice','createAt','productPrice','shipPrice','payment_method'],
+        populate: [{path:'product.id_product',select:['name','urlImage']},
+        {path:'product.size',select:'name'},{path:'product.color',select:'name'},{path:'payment_method',select:'name'},{path:'id_info'
         ,select:['name','phone','address'],populate:[{path:'address.id_province',select:'name'},
         {path:'address.id_district',select:'name'}, {path:'address.id_commune',select:'name'}]}]}).
         populate('history.id_status',['name'])
