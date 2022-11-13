@@ -5,15 +5,19 @@ const auth = require('../middleware/auth');
 
 
 exports.getRate = async function(req, res) {
-    const rates = await Rate.findOne({ id_product: req.params.id_product });
-    const rate = {
-        _id: rates._id,
-        id_product: rates.id_product,
-        rate: rates.rate
+    try {
+        const rates = await Rate.findOne({ id_product: req.params.id_product });
+        const rate = {
+            _id: rates._id,
+            id_product: rates.id_product,
+            rate: rates.rate
+        }
+        res.status(200).json({
+            message: "success",
+            comment: rate,
+            status: true
+        });
+    } catch (e) {
+        res.send(e);
     }
-    res.status(200).json({
-        message: "success",
-        comment: rate,
-        status: true
-    });
 }
