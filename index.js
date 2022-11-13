@@ -33,6 +33,7 @@ const rate = require('./Route/Rate');
 const infor = require('./Route/Infor');
 const delivery = require('./Route/Delivery');
 const inforAddress = require('./Route/InforAddress');
+const paymentMethod = require('./Route/PaymentMethod');
 
 
 const upload = require('./Route/Upload');
@@ -58,6 +59,7 @@ app.use('/api/v1/web/bill', bill);
 app.use('/api/v1/web/infor', infor);
 app.use('/api/v1/web/inforaddress', inforAddress);
 app.use('/api/v1/web', upload);
+app.use('/api/v1/web/paymentmethod', paymentMethod);
 
 const port = process.env.PORT || 3002;
 http.listen(port, () => console.log('Socket listening on port...' + port));
