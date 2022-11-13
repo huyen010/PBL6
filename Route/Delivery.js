@@ -7,10 +7,10 @@ const router = express.Router();
 const deliveryAdmin = require('../Controller/DeliveryAdmin');
 
 //------------ create ------------//
-router.post('/', staffOrAdmin, deliveryAdmin.createDelivery);
+router.post('/', deliveryAdmin.createDelivery);
 
 //------------ update ------------//
-router.put('/:id', staffOrAdmin, deliveryAdmin.updateDelivery);
+router.put('/:id', deliveryAdmin.updateDelivery);
 
 //------------ get ------------//
 router.get('/', deliveryAdmin.getDelivery);

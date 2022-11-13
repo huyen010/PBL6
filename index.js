@@ -34,6 +34,7 @@ const infor = require('./Route/Infor');
 const delivery = require('./Route/Delivery');
 const inforAddress = require('./Route/InforAddress');
 const paymentMethod = require('./Route/PaymentMethod');
+const staff = require('./Route/Staff');
 
 
 const upload = require('./Route/Upload');
@@ -48,6 +49,7 @@ app.use('/api/v1/cms/categories', categoryAdmin);
 app.use('/api/v1/cms/stock', stockAdmin);
 app.use('/api/v1/cms/supplies', supplyAdmin);
 app.use('/api/v1/cms/deliveries', delivery);
+app.use('/api/v1/cms/staff', staff);
 app.use('/api/v1/web/products', productPublic);
 app.use('/api/v1/web/address', address);
 app.use('/api/v1/web/users', user);
