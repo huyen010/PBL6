@@ -46,7 +46,8 @@ const Bill = mongoose.model('Bill', new mongoose.Schema({
     },
     delivery:{
         type: Schema.Types.ObjectId,
-        ref: Delivery
+        ref: Delivery,
+        required:true
     },
     weight: {
         type: Number,
