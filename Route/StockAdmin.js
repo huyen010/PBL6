@@ -28,11 +28,7 @@ router.post('/insert', async function(req, res) {
         await supply.save();
         res.send(stock);
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 })
 

@@ -9,11 +9,7 @@ exports.getPaymentMethod = async function(req, res) {
             status: true
         });
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 }
 
@@ -34,11 +30,7 @@ exports.createPaymentMethod = async function(req, res) {
             status: true
         });
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 }
 
@@ -48,11 +40,7 @@ exports.deletePaymentMethod = async function(req, res) {
         if (!payment) return res.status(404).send({ message: 'Not availble' });
         res.send({ message: 'Success' });
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 }
 
@@ -73,10 +61,6 @@ exports.editPaymentMethod = async function(req, res) {
             status: true
         });
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 }

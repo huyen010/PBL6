@@ -9,11 +9,7 @@ exports.GetListCate = async function GetlistCate(req, res) {
         const categories = await Category.find().sort('name');
         res.send(categories);
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 }
 exports.GetCateDetail = async function GetCateDetail(req, res) {
@@ -22,11 +18,7 @@ exports.GetCateDetail = async function GetCateDetail(req, res) {
         if (!category) return res.status(404).send({ message: 'Not availble' });
         res.send(category);
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 }
 exports.InsertCate = async function InsertCate(req, res) {
@@ -38,11 +30,7 @@ exports.InsertCate = async function InsertCate(req, res) {
         cate = await cate.save();
         res.send(cate);
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 }
 exports.UpdateCate = async function UpdateCate(req, res) {
@@ -54,11 +42,7 @@ exports.UpdateCate = async function UpdateCate(req, res) {
         if (!cate) return res.status(400).send({ message: 'Not availble' });
         res.send(cate);
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 }
 
@@ -72,10 +56,6 @@ exports.deleteCate = async function DeleteCate(req, res) {
         if (!cate) return res.status(404).send({ message: 'Not availble' });
         res.send({ message: 'Success' });
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 }

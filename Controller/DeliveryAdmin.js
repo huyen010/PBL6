@@ -24,11 +24,7 @@ exports.createDelivery = async(req, res) => {
             status: true
         });
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 }
 
@@ -54,11 +50,7 @@ exports.updateDelivery = async(req, res) => {
             status: true
         });
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 }
 
@@ -71,10 +63,6 @@ exports.getDelivery = async function(req, res) {
             status: true
         });
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 }
