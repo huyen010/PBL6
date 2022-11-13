@@ -25,11 +25,18 @@ router.delete('/delete/:id',async function(req,res){
                 res.send({message: 'Delete successful'})
         }
 })
-router.get('/all',async function(req,res){
-        const supplies = await Supply.find({}).populate('id_representative',['name','phone','possition','image'])
-        .populate('listProduct','name').populate({path: 'id_commune', select: 'name',
-        populate : {path:'id_district',select:'name', populate:{path:'id_province',select:'name'}}} )
-        return res.send(supplies);
+router.get('/all/:page',async function(req,res){
+        const page = req.params.page
+        try{
+                const supplies = await Supply.find({}).limit(10).skip((page-1)*16).populate('id_representative',['name','phone','possition','image'])
+                .populate('listProduct','name').populate({path: 'id_commune', select: 'name',
+                populate : {path:'id_district',select:'name', populate:{path:'id_province',select:'name'}}} )
+                let count = await Supply.countDocuments();
+                count = parseInt((count-1)/10) + 1
+                return res.status(200).send({message: 'success',supplies: supplies, count: count});
+        }catch(ex){
+                res.status(400).send({message:'error'})
+        }
 })
 router.get('/detail/:id',async function(req,res){
         const supply = await Supply.findById(req.params.id).populate({path: 'id_commune', select: 'name',
