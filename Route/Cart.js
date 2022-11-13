@@ -15,11 +15,7 @@ router.get('/', auth, async function(req, res) {
         }
         res.status(200).send({ cart: cart, price: price });
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 })
 
@@ -58,11 +54,7 @@ router.post('/insert', auth, async function(req, res) {
         // const cartAfter = await Cart.findOne({id_user:req.user.id}).populate('product.id_product',['name','price']).populate('product.color',['name']).populate('product.size',['name'])
         res.status(200).send({ message: 'Success' });
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 })
 
@@ -80,11 +72,7 @@ router.put('/update', auth, async function(req, res) {
         }
         res.status(200).send({ cart: cartAfter, price: price });
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 })
 router.delete('/delete/:id', auth, async function(req, res) {

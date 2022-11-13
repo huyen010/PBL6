@@ -121,11 +121,7 @@ exports.registerHandle = (req, res) => {
             });
         }
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 }
 
@@ -198,11 +194,7 @@ exports.activateHandle = (req, res) => {
             console.log("Account activation error!")
         }
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 }
 
@@ -320,11 +312,7 @@ exports.forgotPassword = (req, res) => {
             });
         }
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 }
 
@@ -393,11 +381,7 @@ exports.resetPassword = async function(req, res) {
             }
         }
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 }
 
@@ -439,11 +423,7 @@ exports.login = (req, res) => {
             });
         }
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 
 }

@@ -37,11 +37,7 @@ exports.createUser = (req, res) => {
             }
         })
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 }
 
@@ -74,11 +70,7 @@ exports.updateUser = async(req, res) => {
             });
         }
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 }
 
@@ -100,11 +92,7 @@ exports.getUser = async(req, res) => {
             });
         }
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 }
 
@@ -124,10 +112,6 @@ exports.deleteUser = async(req, res) => {
             status: true
         });
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 }

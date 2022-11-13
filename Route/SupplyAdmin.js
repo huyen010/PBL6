@@ -21,11 +21,7 @@ router.post('/insert', async function(req, res) {
         supply = await supply.save();
         res.send(supply);
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 })
 router.delete('/delete/:id', async function(req, res) {
@@ -39,11 +35,7 @@ router.delete('/delete/:id', async function(req, res) {
             res.send({ message: 'Delete successful' })
         }
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 })
 router.get('/all', async function(req, res) {
@@ -56,11 +48,7 @@ router.get('/all', async function(req, res) {
             })
         return res.send(supplies);
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 })
 router.get('/detail/:id', async function(req, res) {
@@ -72,11 +60,7 @@ router.get('/detail/:id', async function(req, res) {
         })
         return res.send({ supply: supply });
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 })
 router.get('/representative/:id', async function(req, res) {
@@ -84,11 +68,7 @@ router.get('/representative/:id', async function(req, res) {
         const representative = await Representative.findById(req.params.id);
         return res.send({ representative: representative });
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 })
 router.put('/update/:id', async function(req, res) {
@@ -104,11 +84,7 @@ router.put('/update/:id', async function(req, res) {
         // let supply = new Supply({name:req.body.name,phone:req.body.phone,street:req.body.street,id_commune:req.body.id_commune,id_representative:req.body.id_representative});
         res.send(supply);
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 })
 module.exports = router;

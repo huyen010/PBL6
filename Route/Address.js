@@ -9,11 +9,7 @@ router.get('/province', async function(req, res) {
         const province = await Province.find({})
         return res.send(province);
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 })
 
@@ -23,11 +19,7 @@ router.get('/district/:province', async function(req, res) {
         const district = await District.find({ id_province: req.params.province })
         return res.send(district);
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 })
 
@@ -36,11 +28,7 @@ router.get('/commune/:district', async function(req, res) {
         const commune = await Commune.find({ id_district: req.params.district });
         return res.send(commune);
     } catch (e) {
-        res.status(400).json({
-            message: 'Something went wrong!',
-            token: "",
-            status: false
-        });
+        res.send(e);
     }
 })
 
