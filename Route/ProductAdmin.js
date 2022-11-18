@@ -25,22 +25,15 @@ router.post('/insert', async function(req, res) {
         product.populate('id_cate', ['name']);
         let rate = new Rate({ id_product: product._id })
         rate = await rate.save();
-        res.send(product);
+        res.status(200).send(product);
+
     } catch (err) {
-        console.log(err);
-
+        res.status(400).send({message:'error'})
     }
-    const sl = await SlugF(req.body.name, 1)
-    let product = new Product({ name: req.body.name, id_cate: req.body.id_cate, slug: sl })
-    product = await product.save();
-    product.populate('id_cate', ['name']);
-    let rate = new Rate({ id_product: product._id })
-    rate = await rate.save();
-    res.send(product);
-
 
 })
 router.put('/update/:id', async function(req, res) {
+    console.log('11')
     try {
         const { error } = validateUpdateProduct(req.body);
         if (!error) return res.status(400).send(error.details[0].message)
@@ -49,14 +42,17 @@ router.put('/update/:id', async function(req, res) {
             return res.status(404).send('Danh mục không tồn tại')
         }
         const sl = await SlugF(req.body.name, 1)
-        let product = await Product.findByIdAndUpdate(req.params.id, { name: req.body.name, slug: sl, id_cate: req.body.id_cate, description: req.body.description, urlImage: req.body.urlImage, sellDay: Date.now(), weight: req.body.weight, price: req.body.price, status: "Đang bán" }, { new: true });
+        let product = await Product.findByIdAndUpdate(req.params.id, { name: req.body.name, slug: sl, 
+            id_cate: req.body.id_cate, description: req.body.description, urlImage: req.body.urlImage, 
+            sellDay: Date.now(), weight: req.body.weight, price: req.body.price, status: "Đang bán" }, 
+            { new: true });
         if (!product) return res.status(404).send('Sản phẩm không tồn tại')
         return res.send(product);
     } catch (err) {
         console.log(err);
     }
 })
-router.get('/detail/:id', auth, async function(req, res) {
+router.get('/detail/:id', async function(req, res) {
     try {
         const product = await Product.findById(req.params.id).populate('id_cate', ['name'])
         if (!product) return res.status(404).send('Sản phẩm không tồn tại')
@@ -132,22 +128,22 @@ router.get('/:slug/:page', async function(req, res) {
         res.status(400).send({ message: 'error' })
     }
 })
-router.get('/:slug/:page', async function(req, res) {
-    const page = req.params.page;
-    const slug = req.params.slug;
-    try {
-        let products = undefined;
-        if (slug.localeCompare('all') == 0) {
-            products = await Product.find().limit(16).skip((page - 1) * 16).populate('id_cate', ['name']).sort({ '_id': -1 });
-        } else {
-            const cate = await Category.findOne({ slug: req.params.slug })
-            products = await Product.find({ id_cate: cate._id }).limit(16).skip((page - 1) * 16).sort({ '_id': -1 })
-        }
-        res.send(products)
-    } catch (ex) {
-        res.status(404).send('Not availble')
-    }
-})
+// router.get('/:slug/:page', async function(req, res) {
+//     const page = req.params.page;
+//     const slug = req.params.slug;
+//     try {
+//         let products = undefined;
+//         if (slug.localeCompare('all') == 0) {
+//             products = await Product.find().limit(16).skip((page - 1) * 16).populate('id_cate', ['name']).sort({ '_id': -1 });
+//         } else {
+//             const cate = await Category.findOne({ slug: req.params.slug })
+//             products = await Product.find({ id_cate: cate._id }).limit(16).skip((page - 1) * 16).sort({ '_id': -1 })
+//         }
+//         res.send(products)
+//     } catch (ex) {
+//         res.status(404).send('Not availble')
+//     }
+// })
 
 router.post('/discount', async function(req, res) {
         try {
