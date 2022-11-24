@@ -15,5 +15,8 @@ router.put('/:id', deliveryAdmin.updateDelivery);
 //------------ get ------------//
 router.get('/', deliveryAdmin.getDelivery);
 
+//------------ get ------------//
+router.get('/all', deliveryAdmin.getAll);
+
 
 module.exports = router;

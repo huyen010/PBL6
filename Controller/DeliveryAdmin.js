@@ -66,3 +66,16 @@ exports.getDelivery = async function(req, res) {
         res.send(e);
     }
 }
+
+exports.getAll = async function(req, res) {
+    try {
+        const delivery = await Delivery.find()
+        res.status(200).json({
+            message: "success",
+            delivery: delivery,
+            status: true
+        });
+    } catch (e) {
+        res.send(e);
+    }
+}
