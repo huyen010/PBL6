@@ -31,7 +31,11 @@ const Stock = mongoose.model('Stock', new mongoose.Schema({
                         required: true
                     }
                 }
-            ]
+            ],
+            price: {
+                type: Number,
+                required: true
+            }
     }
     ],
     remain: [{

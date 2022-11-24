@@ -24,11 +24,15 @@ router.get('/list/:slug/:page', async function(req, res) {
     page = req.params.page
     let products = null;
     if (req.params.slug.localeCompare('all') == 0) {
-        products = await Product.find({ status: "Đang bán" }).sort({ '_id': -1 }).limit(16).skip((page - 1) * 16).populate('size', ['name', 'description']).populate('color', ['name']);
+        products = await Product.find({ status: "Đang bán" })
+        .sort({ '_id': -1 }).limit(16).skip((page - 1) * 16).populate('size', ['name', 'description'])
+        .populate('color', ['name']);
         count = await Product.countDocuments({ status: "Đang bán" });
     } else {
         const cate = await Category.findOne({ slug: req.params.slug });
-        products = await Product.find({ id_cate: cate._id, status: "Đang bán" }).sort({ '_id': -1 }).limit(16).skip((page - 1) * 16).populate('size', ['name', 'description']).populate('color', ['name']);
+        products = await Product.find({ id_cate: cate._id, status: "Đang bán" })
+        .sort({ '_id': -1 }).limit(16).skip((page - 1) * 16).populate('size', ['name', 'description'])
+        .populate('color', ['name']);
         count = await Product.countDocuments({ id_cate: cate._id, status: "Đang bán" });
     }
     if (count !== 0) {
@@ -56,7 +60,8 @@ router.get('/count/:slug', async function(req, res) {
     }
 })
 
-router.get('/search/:slug/:search/:page/:sort', async function(req, res) {
+router.post('/search/:slug/:page/:sort', async function(req, res) {
+    const search = req.body.search;
     const sl = req.params.slug;
     let page = req.params.page
     let products = undefined;
@@ -69,12 +74,14 @@ router.get('/search/:slug/:search/:page/:sort', async function(req, res) {
     let count = 0;
     try {
         if (sl.localeCompare('all') == 0) {
-            products = await Product.find({ "status": "Đang bán", "name": { "$regex": req.params.search, "$options": "i" } }).sort(sortType).limit(16).skip((page - 1) * 16)
-                .populate('size', ['name', 'description']).populate('color', ['name']);
+            console.log('11')
+            products = await Product.find({ "status": "Đang bán", "name": { "$regex": search, "$options": "i" } })
+            .sort(sortType).limit(16).skip((page - 1) * 16)
+            .populate('size', ['name', 'description']).populate('color', ['name']);
             count = await Product.countDocuments({
                 "status": "Đang bán",
                 "name": {
-                    "$regex": req.params.search,
+                    "$regex": search,
                     "$options": "i"
                 }
             })
@@ -83,7 +90,7 @@ router.get('/search/:slug/:search/:page/:sort', async function(req, res) {
             products = await Product.find({
                     "status": "Đang bán",
                     "id_cate": cate._id,
-                    "name": { "$regex": req.params.search, "$options": "i" }
+                    "name": { "$regex": search, "$options": "i" }
                 }).sort(sortType)
                 .limit(16).skip((page - 1) * 16).populate('size', ['name', 'description'])
                 .populate('size', ['name', 'description']).populate('color', ['name']);
@@ -91,7 +98,7 @@ router.get('/search/:slug/:search/:page/:sort', async function(req, res) {
                 "status": "Đang bán",
                 "id_cate": cate._id,
                 "name": {
-                    "$regex": req.params.search,
+                    "$regex": search,
                     "$options": "i"
                 }
             })
@@ -107,32 +114,36 @@ router.get('/detail/:slug', async function(req, res) {
         let product = undefined;
         let rs = undefined;
         try {
-            product = await Product.findOne({ slug: req.params.slug }).populate('size', ['name', 'description']).populate('color', ['name'])
+            product = await Product.findOne({ slug: req.params.slug })
+            .populate('size', ['name', 'description']).populate('color', ['name'])
             if (!product) return res.status(404).send('Sản phẩm không tồn tại');
-            const stock = (await Stock.findOne({ receive: { $elemMatch: { id_product: (product._id).toString() } } })).receive;
+            const stock = (await Stock.findOne({ receive: { $elemMatch: { id_product: (product._id)
+            .toString() } } })).remain
 
             rs = stock.filter(stock => stock.id_product == (product._id).toString())[0].receive;
-            console.log(product._id);
             const rate = await Rate.findOne({ id_product: product._id })
             console.log(rate);
 
             const comment = await Comment.find({ id_product: product._id }).populate('id_account', ['name'])
             return res.status(200).send({ product: product, rate: rate, comment: comment, number: rs });
         } catch (err) {
-            return res.status(200).send({ product: product, number: rs });
+            return res.status(400).send({message: 'error'})
         }
     })
-    // router.get('/wish-list/:slug', async function(req,res){
-    //     let products = undefined;
-    //     let rs = undefined;
-    //     try{
-    //         const products = await Rate.find({rate : { $gte: 4 }}).sort({rate:1}).
-    //         limit(16).skip((page-1)*16).populate({path:'id_product',select: ['name',]})populate('size',['name','description']).populate('color',['name']).
-    //         populate('id_product',)
-    //     }catch(err){
-
-//     }
-// })
+    router.get('/wish-list/:page', async function(req,res){
+        let products = undefined;
+        const page = req.params.page
+        try{
+            const products = await Rate.find({rate : { $gte: 4 }}).sort({rate:1}).
+            limit(16).skip((page-1)*16).populate({path:'id_product',select: ['name','price','urlImage',
+            'status','slug','sold','description', 'discount','size','color']})
+            .populate('id_product.size',['name']).populate('id_product.color',['name']);
+            res.status(200).send({message:'success',products:products})
+        }catch(err){
+            res.status(400).send({message:'error'})
+            console.log(err)
+        }
+})
 // router.get('/number/:idproduct',async function(req,res){
 //     try{
 //         const stock = (await Stock.findOne({receive: {$elemMatch: {id_product: req.params.idproduct}}})).receive;
