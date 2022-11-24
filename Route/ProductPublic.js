@@ -60,7 +60,7 @@ router.get('/count/:slug', async function(req, res) {
     }
 })
 
-router.get('/search/:slug/:page/:sort', async function(req, res) {
+router.post('/search/:slug/:page/:sort', async function(req, res) {
     const search = req.body.search;
     const sl = req.params.slug;
     let page = req.params.page
