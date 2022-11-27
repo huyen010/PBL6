@@ -35,6 +35,7 @@ const delivery = require('./Route/Delivery');
 const inforAddress = require('./Route/InforAddress');
 const paymentMethod = require('./Route/PaymentMethod');
 const staff = require('./Route/Staff');
+const discounts = require('./Route/Discounts');
 
 
 const upload = require('./Route/Upload');
@@ -62,6 +63,7 @@ app.use('/api/v1/web/infor', infor);
 app.use('/api/v1/web/inforaddress', inforAddress);
 app.use('/api/v1/web', upload);
 app.use('/api/v1/web/paymentmethod', paymentMethod);
+app.use('/api/v1/cms/discounts', discounts);
 
 const port = process.env.PORT || 3002;
 http.listen(port, () => console.log('Socket listening on port...' + port));
