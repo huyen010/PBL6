@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/', auth, async function(req, res) {
     try {
         let cart = await Cart.findOne({ id_account: req.user.id }).populate('product.id_product', ['name', 'price', 'urlImage', 'discount'])
-            .populate('product.color', ['name']).populate('product.size', ['name', 'description'])
+            .populate('product.color', ['name']).populate('product.size', ['name'])
         let price = 0;
         for (let i = 0; i < cart.product.length; i++) {
 
@@ -15,14 +15,12 @@ router.get('/', auth, async function(req, res) {
         }
         res.status(200).send({ cart: cart, price: price });
     } catch (e) {
-        res.send(e);
+        res.status(200).send({message:'error'})
     }
 })
 
 router.post('/insert', auth, async function(req, res) {
     try {
-        console.log('11')
-        console.log(req.body);
         let cart = await Cart.findOne({ id_account: req.user.id })
         const listPD = cart.product;
         let pd = listPD.filter(listPD => listPD.id_product.toString() === req.body.id_product &
@@ -54,6 +52,7 @@ router.post('/insert', auth, async function(req, res) {
         // const cartAfter = await Cart.findOne({id_user:req.user.id}).populate('product.id_product',['name','price']).populate('product.color',['name']).populate('product.size',['name'])
         res.status(200).send({ message: 'Success' });
     } catch (e) {
+        console.log(e)
         res.send(e);
     }
 })

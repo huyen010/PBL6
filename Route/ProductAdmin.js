@@ -8,6 +8,8 @@ const auth = require('../middleware/auth');
 const { Discount } = require('../Model/Discount');
 var schedule = require('node-schedule');
 const Rate = require('../Model/Rate');
+const { Size } = require('../Model/Size');
+const { Color } = require('../Model/Color');
 
 const router = express.Router();
 
@@ -25,7 +27,7 @@ router.post('/insert', async function(req, res) {
         product.populate('id_cate', ['name']);
         let rate = new Rate({ id_product: product._id })
         rate = await rate.save();
-        res.status(200).send(product);
+        res.status(200).send({message:'success'});
 
     } catch (err) {
         res.status(400).send({message:'error'})
@@ -153,7 +155,7 @@ router.post('/discount', async function(req, res) {
                 console.log(element);
                 return await Product.findByIdAndUpdate(element, { discount: req.body.percent })
             })
-            res.send(dc);
+            res.status(200).send(dc);
         } catch (e) {
             res.status(400).json({
                 message: 'Something went wrong!',
@@ -166,5 +168,14 @@ router.post('/discount', async function(req, res) {
     //         const dc = Discount.findOne({id_product: {"$in": req.params.id}})
     //         console.log(dc.percent);
     // })
+router.get('/properties',async function getAllSize(req,res){
+    try{
+        const size = await Size.find({})
+        const color = await Color.find({})
+        res.status(200).send({size:size,color:color})
+    }catch(ex){
+        res.status(400).send({message:'error'})
+    }
+})
 
 module.exports = router;
