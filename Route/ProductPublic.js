@@ -8,6 +8,7 @@ const { Stock } = require('../Model/Stock');
 const { Discount } = require('../Model/Discount');
 const Rate = require('../Model/Rate');
 const Comment = require('../Model/Comment');
+const { StockProduct } = require('../Model/StockProduct');
 const router = express.Router();
 // router.get('/all/:page',async function(req,res){
 //     const page = 1
@@ -117,10 +118,7 @@ router.get('/detail/:slug', async function(req, res) {
             product = await Product.findOne({ slug: req.params.slug })
             .populate('size', ['name', 'description']).populate('color', ['name'])
             if (!product) return res.status(404).send('Sản phẩm không tồn tại');
-            const stock = (await Stock.findOne({ receive: { $elemMatch: { id_product: (product._id)
-            .toString() } } })).remain
-
-            rs = stock.filter(stock => stock.id_product == (product._id).toString())[0].receive;
+            const rs = await StockProduct.find({id_product:product._id}).select(['size','color','number'])
             const rate = await Rate.findOne({ id_product: product._id })
             console.log(rate);
 
