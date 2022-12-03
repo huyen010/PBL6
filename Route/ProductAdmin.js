@@ -35,7 +35,6 @@ router.post('/insert', async function(req, res) {
 
 })
 router.put('/update/:id', async function(req, res) {
-    console.log('11')
     try {
         const { error } = validateUpdateProduct(req.body);
         if (!error) return res.status(400).send(error.details[0].message)
@@ -46,7 +45,18 @@ router.put('/update/:id', async function(req, res) {
         const sl = await SlugF(req.body.name, 1)
         let product = await Product.findByIdAndUpdate(req.params.id, { name: req.body.name, slug: sl, 
             id_cate: req.body.id_cate, description: req.body.description, urlImage: req.body.urlImage, 
-            sellDay: Date.now(), weight: req.body.weight, price: req.body.price, status: "Đang bán" }, 
+            weight: 0.2, price: req.body.price}, 
+            { new: true });
+        if (!product) return res.status(404).send('Sản phẩm không tồn tại')
+        return res.send(product);
+    } catch (err) {
+        console.log(err);
+    }
+})
+router.post('/sell-product/:id',async function(req,res){
+    try {
+        let product = await Product.findByIdAndUpdate(req.params.id, {description: req.body.description, urlImage: req.body.urlImage, 
+            sellDay: Date.now(), weight: 0.2, price: req.body.price, status: "Đang bán" }, 
             { new: true });
         if (!product) return res.status(404).send('Sản phẩm không tồn tại')
         return res.send(product);

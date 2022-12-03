@@ -13,7 +13,6 @@ async function staff(req, res, next) {
         try {
             const decoded = jwt.verify(token, process.env.PRIVATE_KEY);
             req.user = decoded;
-            console.log(req.user);
             const id_account = req.user.id;
             var account = await Account.findOne({ _id: id_account });
             if (account.id_role == 1) {

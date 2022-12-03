@@ -85,6 +85,7 @@ async function insertSizeColorProduct(listSize, listColor, idProduct) {
   var uniqColor = [ ...new Set(color) ]
   await Product.findByIdAndUpdate(idProduct, {
     $push: { size: uniqSize, color: uniqColor},
+    status:'Chưa bán'
   });
 }
 
