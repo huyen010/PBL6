@@ -13,7 +13,7 @@ const { StockProduct } = require("../Model/StockProduct");
 // });
 async function UpdateStockProduct(product) {
   const number = product.number * -1;
-  let stockProduct = StockProduct.findOneAndUpdate(
+  let stockProduct = await StockProduct.findOneAndUpdate(
     {
       id_product: product.id_product,
       size: product.size,
@@ -48,6 +48,7 @@ router.post("/insert", auth, async function (req, res) {
     let orderhistory = new Order_history({
       id_account: req.user.id,
       id_bill: bill._id,
+      delivery: bill.delivery,
       history: [{ id_status: "63691e673f2070927236ba3f", date: Date.now() }],
     });
     orderhistory = await orderhistory.save();
