@@ -47,7 +47,7 @@ router.post("/insert", auth, async function (req, res) {
     let orderhistory = new Order_history({
       id_account: req.user.id,
       id_bill: bill._id,
-      paymentMethod: bill.payment_method,
+      delivery: bill.delivery,
       history: [{ id_status: "63691e673f2070927236ba3f", date: Date.now() }],
     });
     orderhistory = await orderhistory.save();

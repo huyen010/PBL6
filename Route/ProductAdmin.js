@@ -99,16 +99,19 @@ router.get('/:slug/:search/:page', async function(req, res) {
     const page = req.params.page;
     const slug = req.params.slug;
     const search = req.params.search;
+    let count = 0
     try {
         let products = undefined;
         if (slug.localeCompare('all') == 0) {
             products = await Product.find({ name: { $regex: '.*' + search + '.*', $options: 'i' } }).limit(16).skip((page - 1) * 16)
+            count = await Product.countDocuments({ name: { $regex: '.*' + search + '.*', $options: 'i' } })
         } else {
             console.log(search);
             const cate = await Category.findOne({ slug: req.params.slug })
             products = await Product.find({ id_cate: cate._id, name: { $regex: '.*' + search + '.*', $options: 'i' } }).limit(16).skip((page - 1) * 16)
         }
-        res.send(products)
+        if(count > 0){ count = parseInt(count -1)/6 + 1}
+        res.status(200).send({product: products,count:1})
     } catch (ex) {
         res.status(400).send({ message: 'error' })
     }

@@ -51,7 +51,7 @@ router.put('/update/:id',async function(req,res){
         res.status(400).send({message:'error',status:false})
     }
 })
-router.put('/cancel/:id', async function(req,res){
+router.post('/cancel/:id', async function(req,res){
     try{
         let orderhistory = await Order_history.findByIdAndUpdate(req.params.id,{
             isCancel: {status: true, date: Date.now(),reason: req.body.reason}
@@ -63,6 +63,20 @@ router.put('/cancel/:id', async function(req,res){
     }catch(ex){
         console.log(ex);
         res.status(400).send({message:'error',status:false})
+    }
+})
+router.post('/update-many',async function(req,res){
+    try{
+        const listID = req.body.listID
+        await Order_history.updateMany({
+            _id:
+                {
+                    $in:listID
+                }
+        },{ $push: { history: {id_status: req.body.id_status, date: Date.now()}}})
+        res.status(200).send({message:'success'})
+    }catch(ex){
+        res.status(400).send({message:'error'})
     }
 })
 router.get('/type/:status/:delivery/:page',async function(req,res){
