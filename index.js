@@ -37,6 +37,7 @@ const inforAddress = require('./Route/InforAddress');
 const paymentMethod = require('./Route/PaymentMethod');
 const staff = require('./Route/Staff');
 const discounts = require('./Route/Discounts');
+const blacklist = require('./Route/BlackList');
 
 
 const upload = require('./Route/Upload');
@@ -66,6 +67,7 @@ app.use('/api/v1/web/inforaddress', inforAddress);
 app.use('/api/v1/web', upload);
 app.use('/api/v1/web/paymentmethod', paymentMethod);
 app.use('/api/v1/cms/discounts', discounts);
+app.use('/api/v1/cms/blacklist', blacklist);
 
 const port = process.env.PORT || 3002;
 http.listen(port, () => console.log('Socket listening on port...' + port));
