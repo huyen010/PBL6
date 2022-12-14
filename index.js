@@ -38,15 +38,15 @@ const paymentMethod = require('./Route/PaymentMethod');
 const staff = require('./Route/Staff');
 const discounts = require('./Route/Discounts');
 const blacklist = require('./Route/BlackList');
+const {logger} = require('./logger/logger');
 
+logger.info('test');
 
 const upload = require('./Route/Upload');
 mongoose.connect('mongodb+srv://pnquang:quang123123a@cluster0.eenmlxn.mongodb.net/?retryWrites=true&w=majority')
     .then(() => console.log('Connected to MongoDB...'))
     .catch(err => console.error('Could not connect to MongoDB...'));
-// app.use('/uploads', express.static('uploads'));
 app.use(express.json());
-// app.use('/api/v1/cms/categories',cateAdmin);
 app.use('/api/v1/cms/products', productAdmin);
 app.use('/api/v1/cms/categories', categoryAdmin);
 app.use('/api/v1/cms/stock', stockAdmin);

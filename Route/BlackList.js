@@ -13,7 +13,9 @@ router.post('/', blackListAdmin.createBlackList);
 router.delete('/:id', blackListAdmin.deleteBalckList);
 
 //------------ get ------------//
-router.get('/', blackListAdmin.getBlackList);
+router.get('/all', blackListAdmin.getBlackList);
+
+router.get('/', auth, blackListAdmin.checkBlackList);
 
 
 
