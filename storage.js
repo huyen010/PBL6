@@ -8,12 +8,5 @@ cloudinary.config({
     api_secret:"h7eMQ8P4nnRLLet7qmhA132U7so"
 });
 
-// const storage = new CloudinaryStorage({
-//     cloudinary,
-//     params: {
-//         folder: 'CloudinaryDemo',
-//         allowedFormats: ['jpeg', 'png', 'jpg'],
-//     }                                                              
-// }); 
 
 module.exports = cloudinary;

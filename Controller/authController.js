@@ -1,459 +1,460 @@
-const bcryptjs = require('bcryptjs');
-const nodemailer = require('nodemailer');
+const bcryptjs = require("bcryptjs");
+const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const JWT_KEY = process.env.JWT_KEY;
 const JWT_RESET_KEY = process.env.JWT_RESET_KEY;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
-
 //------------ Account Model ------------//
-const Account = require('../Model/Account');
-const { Cart } = require('../Model/Cart');
-const User = require('../Model/User');
+const Account = require("../Model/Account");
+const { Cart } = require("../Model/Cart");
+const User = require("../Model/User");
 
 //------------ Register Handle ------------//
 exports.registerHandle = (req, res) => {
-    try {
-        const name = (req.body.name);
-        const email = (req.body.email).trim().toLowerCase();
-        const password = (req.body.password);
-        const password2 = (req.body.password2);
-        const id_role = 2;
+  try {
+    const name = req.body.name;
+    const email = req.body.email.trim().toLowerCase();
+    const password = req.body.password;
+    const password2 = req.body.password2;
+    const id_role = 2;
 
+    //------------ Checking required fields ------------//
+    if (!name || !email || !password || !password2) {
+      res.status(400).json({
+        message: "Please enter all fields",
+        status: false,
+      });
+    }
 
-        //------------ Checking required fields ------------//
-        if (!name || !email || !password || !password2) {
-            res.status(400).json({
-                message: 'Please enter all fields',
-                status: false
-            });
-        }
+    //------------ Checking password mismatch ------------//
+    if (password != password2) {
+      res.status(400).json({
+        message: "Passwords do not match",
+        status: false,
+      });
+    }
 
-        //------------ Checking password mismatch ------------//
-        if (password != password2) {
-            res.status(400).json({
-                message: 'Passwords do not match',
-                status: false
-            });
-        }
-
-        //------------ Checking password length ------------//
-        if (password.length < 8) {
-            res.status(400).json({
-                message: 'Password must be at least 8 characters',
-                status: false
-            });
-        }
-        if (false) {
-            res.status(400).json({
-                message: 'Error',
-                status: false
-            });
+    //------------ Checking password length ------------//
+    if (password.length < 8) {
+      res.status(400).json({
+        message: "Password must be at least 8 characters",
+        status: false,
+      });
+    }
+    if (false) {
+      res.status(400).json({
+        message: "Error",
+        status: false,
+      });
+    } else {
+      //------------ Validation passed ------------//
+      Account.findOne({ email: email }).then((account) => {
+        if (account) {
+          res.status(400).json({
+            message: "Email ID already registered",
+            status: false,
+          });
         } else {
-            //------------ Validation passed ------------//
-            Account.findOne({ email: email }).then(account => {
-                if (account) {
-                    res.status(400).json({
-                        message: 'Email ID already registered',
-                        status: false
-                    });
-                } else {
-                    const oauth2Client = new OAuth2(
-                        "173872994719-pvsnau5mbj47h0c6ea6ojrl7gjqq1908.apps.googleusercontent.com", // ClientID
-                        "OKXIYR14wBB_zumf30EC__iJ", // Client Secret
-                        "https://developers.google.com/oauthplayground" // Redirect URL
-                    );
+          const oauth2Client = new OAuth2(
+            "173872994719-pvsnau5mbj47h0c6ea6ojrl7gjqq1908.apps.googleusercontent.com", // ClientID
+            "OKXIYR14wBB_zumf30EC__iJ", // Client Secret
+            "https://developers.google.com/oauthplayground" // Redirect URL
+          );
 
-                    oauth2Client.setCredentials({
-                        refresh_token: "1//04T_nqlj9UVrVCgYIARAAGAQSNwF-L9IrGm-NOdEKBOakzMn1cbbCHgg2ivkad3Q_hMyBkSQen0b5ABfR8kPR18aOoqhRrSlPm9w"
-                    });
-                    const accessToken = oauth2Client.getAccessToken()
+          oauth2Client.setCredentials({
+            refresh_token:
+              "1//04T_nqlj9UVrVCgYIARAAGAQSNwF-L9IrGm-NOdEKBOakzMn1cbbCHgg2ivkad3Q_hMyBkSQen0b5ABfR8kPR18aOoqhRrSlPm9w",
+          });
+          const accessToken = oauth2Client.getAccessToken();
 
-                    const token = jwt.sign({ name, email, password }, JWT_KEY, { expiresIn: '30m' });
-                    const CLIENT_URL = 'http://' + req.headers.host;
+          const token = jwt.sign({ name, email, password }, JWT_KEY, {
+            expiresIn: "30m",
+          });
+          const CLIENT_URL = "http://" + req.headers.host;
 
-                    const output = `
+          const output = `
                 <h2>Please click on below link to activate your account</h2>
                 <p>${CLIENT_URL}/api/v1/web/auth/activate/${token}</p>
                 <p><b>NOTE: </b> The above activation link expires in 30 minutes.</p>
                 `;
 
-                    const transporter = nodemailer.createTransport({
-                        service: 'gmail',
-                        auth: {
-                            type: "OAuth2",
-                            user: "nodejsa@gmail.com",
-                            clientId: "173872994719-pvsnau5mbj47h0c6ea6ojrl7gjqq1908.apps.googleusercontent.com",
-                            clientSecret: "OKXIYR14wBB_zumf30EC__iJ",
-                            refreshToken: "1//04T_nqlj9UVrVCgYIARAAGAQSNwF-L9IrGm-NOdEKBOakzMn1cbbCHgg2ivkad3Q_hMyBkSQen0b5ABfR8kPR18aOoqhRrSlPm9w",
-                            accessToken: accessToken
-                        },
-                    });
+          const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              type: "OAuth2",
+              user: "nodejsa@gmail.com",
+              clientId:
+                "173872994719-pvsnau5mbj47h0c6ea6ojrl7gjqq1908.apps.googleusercontent.com",
+              clientSecret: "OKXIYR14wBB_zumf30EC__iJ",
+              refreshToken:
+                "1//04T_nqlj9UVrVCgYIARAAGAQSNwF-L9IrGm-NOdEKBOakzMn1cbbCHgg2ivkad3Q_hMyBkSQen0b5ABfR8kPR18aOoqhRrSlPm9w",
+              accessToken: accessToken,
+            },
+          });
 
-                    // send mail with defined transport object
-                    const mailOptions = {
-                        from: '"H3M" <nodejsa@gmail.com>', // sender address
-                        to: email, // list of receivers
-                        subject: "Account Verification: NodeJS Auth ✔", // Subject line
-                        generateTextFromHTML: true,
-                        html: output, // html body
-                    };
+          // send mail with defined transport object
+          const mailOptions = {
+            from: '"H3M" <nodejsa@gmail.com>', // sender address
+            to: email, // list of receivers
+            subject: "Account Verification: NodeJS Auth ✔", // Subject line
+            generateTextFromHTML: true,
+            html: output, // html body
+          };
 
-                    transporter.sendMail(mailOptions, (error, info) => {
-                        if (error) {
-
-                            res.status(400).json({
-                                message: 'Something went wrong on our end. Please register again.',
-                                status: false
-                            });
-                        } else {
-                            console.log('Mail sent : %s', info.response);
-                            res.status(200).json({
-                                message: 'Activation link sent to email ID. Please activate to log in.',
-                                status: true
-                            });
-                        }
-                    })
-
-                }
-            });
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              res.status(400).json({
+                message:
+                  "Something went wrong on our end. Please register again.",
+                status: false,
+              });
+            } else {
+              console.log("Mail sent : %s", info.response);
+              res.status(200).json({
+                message:
+                  "Activation link sent to email ID. Please activate to log in.",
+                status: true,
+              });
+            }
+          });
         }
-    } catch (e) {
-        res.send(e);
+      });
     }
-}
+  } catch (e) {
+    res.send(e);
+  }
+};
 
 //------------ Activate Account Handle ------------//
 exports.activateHandle = (req, res) => {
-    try {
-        const token = req.params.token;
-        let errors = [];
-        if (token) {
-            jwt.verify(token, JWT_KEY, (err, decodedToken) => {
-                if (err) {
-
-                    res.send('Incorrect or expired link! Please register again.');
-                } else {
-
-                    const id_role = 2;
-                    const { name, email, password } = decodedToken;
-                    Account.findOne({ email: email }).then(account => {
-                        if (account) {
-
-                            res.send('Email ID already registered! Please log in.');
-                        } else {
-                            const newAccount = new Account({
-                                name,
-                                email,
-                                password,
-                                id_role
-                            });
-
-                            const fullname = "";
-                            const urlImage = "https://louisville.edu/enrollmentmanagement/images/person-icon/image";
-                            const id_account = newAccount.id;
-                            const phone = "";
-                            const gender = true;
-
-                            const newUser = new User({
-                                fullname,
-                                id_account,
-                                phone,
-                                gender,
-                                urlImage
-                            });
-                            newUser.save();
-
-                            const product = [];
-                            const newCart = new Cart({
-                                product,
-                                id_account
-                            });
-                            newCart.save();
-
-                            bcryptjs.genSalt(10, (err, salt) => {
-                                bcryptjs.hash(newAccount.password, salt, (err, hash) => {
-                                    if (err) throw err;
-                                    newAccount.password = hash;
-                                    newAccount
-                                        .save()
-                                        .then(account => {
-                                            res.send('Account activated. You can now log in.');
-                                        })
-                                        .catch(err => console.log(err));
-                                });
-                            });
-                        }
-                    });
-                }
-
-            })
+  try {
+    const token = req.params.token;
+    let errors = [];
+    if (token) {
+      jwt.verify(token, JWT_KEY, (err, decodedToken) => {
+        if (err) {
+          res.send("Incorrect or expired link! Please register again.");
         } else {
-            console.log("Account activation error!")
+          const id_role = 2;
+          const { name, email, password } = decodedToken;
+          Account.findOne({ email: email }).then((account) => {
+            if (account) {
+              res.send("Email ID already registered! Please log in.");
+            } else {
+              const newAccount = new Account({
+                name,
+                email,
+                password,
+                id_role,
+              });
+
+              const fullname = "";
+              const urlImage =
+                "https://louisville.edu/enrollmentmanagement/images/person-icon/image";
+              const id_account = newAccount.id;
+              const phone = "";
+              const gender = true;
+
+              const newUser = new User({
+                fullname,
+                id_account,
+                phone,
+                gender,
+                urlImage,
+              });
+              newUser.save();
+
+              const product = [];
+              const newCart = new Cart({
+                product,
+                id_account,
+              });
+              newCart.save();
+
+              bcryptjs.genSalt(10, (err, salt) => {
+                bcryptjs.hash(newAccount.password, salt, (err, hash) => {
+                  if (err) throw err;
+                  newAccount.password = hash;
+                  newAccount
+                    .save()
+                    .then((account) => {
+                      res.send("Account activated. You can now log in.");
+                    })
+                    .catch((err) => console.log(err));
+                });
+              });
+            }
+          });
         }
-    } catch (e) {
-        res.send(e);
+      });
+    } else {
+      console.log("Account activation error!");
     }
-}
+  } catch (e) {
+    res.send(e);
+  }
+};
 
 //------------ Forgot Password Handle ------------//
 exports.forgotPassword = (req, res) => {
-    try {
-        const { email } = req.body;
+  try {
+    const { email } = req.body;
 
-        let errors = [];
+    let errors = [];
 
-        //------------ Checking required fields ------------//
-        if (!email) {
-            res.status(400).json({
-                message: 'Please enter an email ID!',
-                status: false
-            });
-        }
+    //------------ Checking required fields ------------//
+    if (!email) {
+      res.status(400).json({
+        message: "Please enter an email ID!",
+        status: false,
+      });
+    }
 
+    if (false) {
+    } else {
+      Account.findOne({ email: email }).then((account) => {
+        if (!account) {
+          //------------ User already exists ------------//
+          res.status(400).json({
+            message: "Account with Email ID does not exist!",
+            status: false,
+          });
+        } else {
+          const oauth2Client = new OAuth2(
+            "173872994719-pvsnau5mbj47h0c6ea6ojrl7gjqq1908.apps.googleusercontent.com", // ClientID
+            "OKXIYR14wBB_zumf30EC__iJ", // Client Secret
+            "https://developers.google.com/oauthplayground" // Redirect URL
+          );
 
-        if (false) {} else {
-            Account.findOne({ email: email }).then(account => {
-                if (!account) {
-                    //------------ User already exists ------------//
-                    res.status(400).json({
-                        message: 'Account with Email ID does not exist!',
-                        status: false
-                    });
+          oauth2Client.setCredentials({
+            refresh_token:
+              "1//04T_nqlj9UVrVCgYIARAAGAQSNwF-L9IrGm-NOdEKBOakzMn1cbbCHgg2ivkad3Q_hMyBkSQen0b5ABfR8kPR18aOoqhRrSlPm9w",
+          });
+          const accessToken = oauth2Client.getAccessToken();
 
-                } else {
-
-                    const oauth2Client = new OAuth2(
-                        "173872994719-pvsnau5mbj47h0c6ea6ojrl7gjqq1908.apps.googleusercontent.com", // ClientID
-                        "OKXIYR14wBB_zumf30EC__iJ", // Client Secret
-                        "https://developers.google.com/oauthplayground" // Redirect URL
-                    );
-
-                    oauth2Client.setCredentials({
-                        refresh_token: "1//04T_nqlj9UVrVCgYIARAAGAQSNwF-L9IrGm-NOdEKBOakzMn1cbbCHgg2ivkad3Q_hMyBkSQen0b5ABfR8kPR18aOoqhRrSlPm9w"
-                    });
-                    const accessToken = oauth2Client.getAccessToken()
-
-                    const token = jwt.sign({ _id: account._id }, JWT_RESET_KEY, { expiresIn: '30m' });
-                    const CLIENT_URL = 'http://' + req.headers.host;
-                    const output = `
+          const token = jwt.sign({ _id: account._id }, JWT_RESET_KEY, {
+            expiresIn: "30m",
+          });
+          const CLIENT_URL = "http://" + req.headers.host;
+          const output = `
                 <h2>Your new account password</h2>
                 <p>123456789</p>
                 `;
-                    var password = '123456789';
-                    bcryptjs.genSalt(10, (err, salt) => {
-                        bcryptjs.hash(password, salt, (err, hash) => {
-                            if (err) throw err;
-                            password = hash;
+          var password = "123456789";
+          bcryptjs.genSalt(10, (err, salt) => {
+            bcryptjs.hash(password, salt, (err, hash) => {
+              if (err) throw err;
+              password = hash;
 
-                            Account.findByIdAndUpdate({ _id: account._id }, { password },
-                                function(err, result) {
-                                    if (err) {
-                                        res.status(400).json({
-                                            message: 'Error resetting password!',
-                                            status: false
-                                        });
-                                    }
-                                });
-
-                        });
+              Account.findByIdAndUpdate(
+                { _id: account._id },
+                { password },
+                function (err, result) {
+                  if (err) {
+                    res.status(400).json({
+                      message: "Error resetting password!",
+                      status: false,
                     });
-
-
-                    Account.updateOne({ resetLink: token }, (err, success) => {
-                        if (err) {
-                            res.status(400).json({
-                                message: 'Error resetting password!',
-                                status: false
-                            });
-                        } else {
-                            const transporter = nodemailer.createTransport({
-                                service: 'gmail',
-                                auth: {
-                                    type: "OAuth2",
-                                    user: "nodejsa@gmail.com",
-                                    clientId: "173872994719-pvsnau5mbj47h0c6ea6ojrl7gjqq1908.apps.googleusercontent.com",
-                                    clientSecret: "OKXIYR14wBB_zumf30EC__iJ",
-                                    refreshToken: "1//04T_nqlj9UVrVCgYIARAAGAQSNwF-L9IrGm-NOdEKBOakzMn1cbbCHgg2ivkad3Q_hMyBkSQen0b5ABfR8kPR18aOoqhRrSlPm9w",
-                                    accessToken: accessToken
-                                },
-                            });
-
-                            // send mail with defined transport object
-                            const mailOptions = {
-                                from: '"H3M" <nodejsa@gmail.com>', // sender address
-                                to: email, // list of receivers
-                                subject: "Account Password Reset: NodeJS Auth ✔", // Subject line
-                                html: output, // html body
-                            };
-
-                            transporter.sendMail(mailOptions, (error, info) => {
-                                if (error) {
-                                    console.log(error);
-                                    res.status(400).json({
-                                        message: 'Something went wrong on our end. Please try again later.',
-                                        status: false
-                                    });
-                                    // res.redirect('/auth/forgot');
-                                } else {
-                                    console.log('Mail sent : %s', info.response);
-                                    res.status(200).json({
-                                        message: 'Password reset link sent to email ID. Please follow the instructions.',
-                                        status: true
-                                    });
-                                }
-                            })
-                        }
-                    })
-
+                  }
                 }
+              );
             });
-        }
-    } catch (e) {
-        res.send(e);
-    }
-}
+          });
 
-exports.resetPassword = async function(req, res) {
-    try {
-        var { current_password, password, password2 } = req.body;
-        const id = req.params.id;
-        const id_account = req.user.id;
-        let errors = [];
-
-        //------------ Checking required fields ------------//
-        if (!password || !password2) {
-            res.status(400).json({
-                message: 'Please enter all fields.',
-                status: false
-            });
-        }
-
-        //------------ Checking password length ------------//
-        else if (password.length < 8) {
-            res.status(400).json({
-                message: 'Password must be at least 8 characters.',
-                status: false
-            });
-        }
-
-        //------------ Checking password mismatch ------------//
-        else if (password != password2) {
-            res.status(400).json({
-                message: 'Passwords do not match.',
-                status: false
-            });
-        } else {
-            var account = await Account.findOne({ _id: id_account });
-            if (bcryptjs.compareSync(current_password, account.password)) {
-                bcryptjs.genSalt(10, (err, salt) => {
-                    bcryptjs.hash(password, salt, (err, hash) => {
-                        if (err) throw err;
-                        password = hash;
-
-                        Account.findByIdAndUpdate({ _id: id_account }, { password },
-                            function(err, result) {
-                                if (err) {
-                                    res.status(400).json({
-                                        message: 'Error resetting password!',
-                                        status: false
-                                    });
-                                } else {
-                                    res.status(200).json({
-                                        message: 'Password reset successfully!',
-                                        status: true
-                                    });
-                                }
-                            }
-                        );
-                    })
-
-                })
-
+          Account.updateOne({ resetLink: token }, (err, success) => {
+            if (err) {
+              res.status(400).json({
+                message: "Error resetting password!",
+                status: false,
+              });
             } else {
+              const transporter = nodemailer.createTransport({
+                service: "gmail",
+                auth: {
+                  type: "OAuth2",
+                  user: "nodejsa@gmail.com",
+                  clientId:
+                    "173872994719-pvsnau5mbj47h0c6ea6ojrl7gjqq1908.apps.googleusercontent.com",
+                  clientSecret: "OKXIYR14wBB_zumf30EC__iJ",
+                  refreshToken:
+                    "1//04T_nqlj9UVrVCgYIARAAGAQSNwF-L9IrGm-NOdEKBOakzMn1cbbCHgg2ivkad3Q_hMyBkSQen0b5ABfR8kPR18aOoqhRrSlPm9w",
+                  accessToken: accessToken,
+                },
+              });
 
-                res.status(400).json({
-                    message: 'Current password is incorrect!',
-                    status: false
-                });
+              // send mail with defined transport object
+              const mailOptions = {
+                from: '"H3M" <nodejsa@gmail.com>', // sender address
+                to: email, // list of receivers
+                subject: "Account Password Reset: NodeJS Auth ✔", // Subject line
+                html: output, // html body
+              };
+
+              transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                  console.log(error);
+                  res.status(400).json({
+                    message:
+                      "Something went wrong on our end. Please try again later.",
+                    status: false,
+                  });
+                  // res.redirect('/auth/forgot');
+                } else {
+                  console.log("Mail sent : %s", info.response);
+                  res.status(200).json({
+                    message:
+                      "Password reset link sent to email ID. Please follow the instructions.",
+                    status: true,
+                  });
+                }
+              });
             }
+          });
         }
-    } catch (e) {
-        res.send(e);
+      });
     }
-}
+  } catch (e) {
+    res.send(e);
+  }
+};
+
+exports.resetPassword = async function (req, res) {
+  try {
+    var { current_password, password, password2 } = req.body;
+    const id = req.params.id;
+    const id_account = req.user.id;
+    let errors = [];
+
+    //------------ Checking required fields ------------//
+    if (!password || !password2) {
+      res.status(400).json({
+        message: "Please enter all fields.",
+        status: false,
+      });
+    }
+
+    //------------ Checking password length ------------//
+    else if (password.length < 8) {
+      res.status(400).json({
+        message: "Password must be at least 8 characters.",
+        status: false,
+      });
+    }
+
+    //------------ Checking password mismatch ------------//
+    else if (password != password2) {
+      res.status(400).json({
+        message: "Passwords do not match.",
+        status: false,
+      });
+    } else {
+      var account = await Account.findOne({ _id: id_account });
+      if (bcryptjs.compareSync(current_password, account.password)) {
+        bcryptjs.genSalt(10, (err, salt) => {
+          bcryptjs.hash(password, salt, (err, hash) => {
+            if (err) throw err;
+            password = hash;
+
+            Account.findByIdAndUpdate(
+              { _id: id_account },
+              { password },
+              function (err, result) {
+                if (err) {
+                  res.status(400).json({
+                    message: "Error resetting password!",
+                    status: false,
+                  });
+                } else {
+                  res.status(200).json({
+                    message: "Password reset successfully!",
+                    status: true,
+                  });
+                }
+              }
+            );
+          });
+        });
+      } else {
+        res.status(400).json({
+          message: "Current password is incorrect!",
+          status: false,
+        });
+      }
+    }
+  } catch (e) {
+    res.send(e);
+  }
+};
 
 //------------ Login Handle ------------//
 exports.login = (req, res) => {
-    try {
-        const email = (req.body.email).trim().toLowerCase();
-        if (req.body && email && req.body.password) {
-            Account.find({ email: email }, (err, data) => {
-                if (data.length > 0) {
-
-
-                    if (bcryptjs.compareSync(req.body.password, data[0].password)) {
-                        checkUserAndGenerateToken(data[0], req, res);
-                        // const account = Account.findOne({ email }).select("+password");
-                        // const account = Account.findOne({ email });
-                        // sendToken(account, 200, res);
-                    } else {
-
-                        res.status(400).json({
-                            message: 'Email or password is incorrect!',
-                            status: false
-                        });
-                    }
-
-                } else {
-                    res.status(400).json({
-                        message: 'Email or password is incorrect!',
-                        token: "",
-                        status: false
-                    });
-                }
-            })
-        } else {
+  try {
+    const email = req.body.email.trim().toLowerCase();
+    if (req.body && email && req.body.password) {
+      Account.find({ email: email }, (err, data) => {
+        if (data.length > 0) {
+          if (bcryptjs.compareSync(req.body.password, data[0].password)) {
+            checkUserAndGenerateToken(data[0], req, res);
+            // const account = Account.findOne({ email }).select("+password");
+            // const account = Account.findOne({ email });
+            // sendToken(account, 200, res);
+          } else {
             res.status(400).json({
-                message: 'Add proper parameter first!',
-                token: "",
-                status: false
+              message: "Email or password is incorrect!",
+              status: false,
             });
+          }
+        } else {
+          res.status(400).json({
+            message: "Email or password is incorrect!",
+            token: "",
+            status: false,
+          });
         }
-    } catch (e) {
-        res.send(e);
+      });
+    } else {
+      res.status(400).json({
+        message: "Add proper parameter first!",
+        token: "",
+        status: false,
+      });
     }
-
-}
-
-
+  } catch (e) {
+    res.send(e);
+  }
+};
 
 function checkUserAndGenerateToken(data, req, res) {
-    jwt.sign({ Account: data.username, id: data._id }, PRIVATE_KEY, { expiresIn: '1d' }, (err, token) => {
-        if (err) {
-            res.status(400).json({
-                status: false,
-                message: err,
-            });
-        } else {
-            res.json({
-                message: 'Login Successfully.',
-                token: token,
-                status: true
-            });
-
-        }
-    });
+  jwt.sign(
+    { Account: data.username, id: data._id },
+    PRIVATE_KEY,
+    { expiresIn: "1d" },
+    (err, token) => {
+      if (err) {
+        res.status(400).json({
+          status: false,
+          message: err,
+        });
+      } else {
+        res.json({
+          message: "Login Successfully.",
+          token: token,
+          status: true,
+        });
+      }
+    }
+  );
 }
 
 //------------ Logout Handle ------------//
 exports.logoutHandle = (req, res) => {
-    req.session.destroy((err) => {
-        res.json({
-            message: 'Logout Successfully.',
-            status: true
-        });
-    })
-}
+  req.session.destroy((err) => {
+    res.json({
+      message: "Logout Successfully.",
+      status: true,
+    });
+  });
+};

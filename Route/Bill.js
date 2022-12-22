@@ -52,12 +52,6 @@ router.post("/insert", auth, async function (req, res) {
     });
     orderhistory = await orderhistory.save();
     res.status(200).send({ message: "success", status: true });
-    const d = new Date();
-    d.setHours(d.getMinutes + 1);
-    schedule.scheduleJob(d, function () {
-      console.log("hello world.");
-      // });
-    });
   } catch (ex) {
     res.status(400).send({ message: "error", status: false });
     console.log(ex);

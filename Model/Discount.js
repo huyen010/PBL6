@@ -7,9 +7,8 @@ const Discount = mongoose.model('Discount',new mongoose.Schema({
     percent:{
         type: Number,
         require: true,
-        minlength: 1,
-        maxlength: 100,
-        unique: true
+        min: 1,
+        max: 100,
     },
     date_create:{
         type: Date,
@@ -21,9 +20,10 @@ const Discount = mongoose.model('Discount',new mongoose.Schema({
     },
     time:{
         type: Number,
-        require: true
+        require: true,
+        min:1,
     },
-    id_product: [{
+    listProduct: [{
         type: Schema.Types.ObjectId,
         ref: Product,
     }
