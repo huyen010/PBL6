@@ -9,7 +9,7 @@ const headers = {
 
 exports.getProvince = (req, res) => {
   method = 'get'
-  path = 'http://localhost:3002/api/v1/web/address/province'
+  path = '206.189.146.194:3002/api/v1/web/address/province'
   const api = create({
     baseURL: path,
     timeout: 1000,
@@ -21,7 +21,7 @@ exports.getProvince = (req, res) => {
   exports.getDistrict = (req, res) => {
     method = 'get'
     const province = req.params.province;
-    path = `http://localhost:3002/api/v1/web/address/district/${province}`
+    path = `http://206.189.146.194:3002/api/v1/web/address/district/${province}`
     const api = create({
       baseURL: path,
       timeout: 1000,
@@ -33,7 +33,7 @@ exports.getProvince = (req, res) => {
   exports.getCommune = (req, res) => {
     method = 'get'
     const province = req.params.province;
-    path = `http://localhost:3002/api/v1/web/address/district/${province}`
+    path = `http://206.189.146.194:3002/api/v1/web/address/district/${province}`
     const api = create({
       baseURL: path,
       timeout: 1000,

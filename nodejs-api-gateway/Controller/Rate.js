@@ -7,7 +7,7 @@ const headers = {
   Accept: 'application/json'
 }
 
-const service = 'http://localhost:3002'
+const service = 'http://206.189.146.194:3002'
 
 exports.getRate = (req, res) => {
   method = 'get'

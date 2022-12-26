@@ -9,7 +9,7 @@ const headers = {
 
 exports.createDelivery = async(req, res) => {
   method = 'post'
-  path = `http://localhost:3003/api/v1/cms/deliveries`
+  path = `http://206.189.146.194:3003/api/v1/cms/deliveries`
   const api = create({
     baseURL: path,
     timeout: 1000,
@@ -20,7 +20,7 @@ exports.createDelivery = async(req, res) => {
 
 exports.getDelivery = async(req, res) => {
   method = 'get'
-  path = `http://localhost:3003/api/v1/cms/deliveries`
+  path = `http://206.189.146.194:3003/api/v1/cms/deliveries`
   const api = create({
     baseURL: path,
     timeout: 1000,
@@ -31,7 +31,7 @@ exports.getDelivery = async(req, res) => {
 
 exports.getAllDelivery = async(req, res) => {
   method = 'get'
-  path = `http://localhost:3003/api/v1/cms/deliveries/all`
+  path = `http://206.189.146.194:3003/api/v1/cms/deliveries/all`
   const api = create({
     baseURL: path,
     timeout: 1000,
@@ -43,7 +43,7 @@ exports.getAllDelivery = async(req, res) => {
 exports.updateDelivery = async(req, res) => {
   const id = req.params.id;
   method = 'put'
-  path = `http://localhost:3003/api/v1/cms/deliveries/${id}`
+  path = `http://206.189.146.194:3003/api/v1/cms/deliveries/${id}`
   const api = create({
     baseURL: path,
     timeout: 1000,

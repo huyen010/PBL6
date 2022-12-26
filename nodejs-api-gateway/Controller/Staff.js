@@ -9,7 +9,7 @@ const headers = {
 
 exports.getAllStaff = (req, res) => {
   method = 'get'
-  path = 'http://localhost:3001/api/v1/cms/staff'
+  path = 'http://206.189.146.194:3001/api/v1/cms/staff'
   const api = create({
     baseURL: path,
     timeout: 1000,
@@ -21,7 +21,7 @@ exports.getAllStaff = (req, res) => {
   exports.getStaff = (req, res) => {
     method = 'get'
     const id = req.params.id;
-    path = `http://localhost:3001/api/v1/cms/staff/${id}`
+    path = `http://206.189.146.194:3001/api/v1/cms/staff/${id}`
     const api = create({
       baseURL: path,
       timeout: 1000,
@@ -33,7 +33,7 @@ exports.getAllStaff = (req, res) => {
   exports.updateStaff = (req, res) => {
     method = 'put'
     const id = req.params.id;
-    path = `http://localhost:3001/api/v1/cms/staff/${id}`
+    path = `http://206.189.146.194:3001/api/v1/cms/staff/${id}`
     const api = create({
       baseURL: path,
       timeout: 1000,
@@ -45,7 +45,7 @@ exports.getAllStaff = (req, res) => {
   exports.deleteStaff = (req, res) => {
     method = 'delete'
     const id = req.params.id;
-    path = `http://localhost:3001/api/v1/cms/staff/${id}`
+    path = `http://206.189.146.194:3001/api/v1/cms/staff/${id}`
     const api = create({
       baseURL: path,
       timeout: 1000,
