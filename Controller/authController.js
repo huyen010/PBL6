@@ -151,7 +151,7 @@ exports.activateHandle = (req, res) => {
                 id_role,
               });
 
-              const fullname = "";
+              const fullname = name;
               const urlImage =
                 "https://louisville.edu/enrollmentmanagement/images/person-icon/image";
               const id_account = newAccount.id;
