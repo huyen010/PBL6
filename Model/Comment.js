@@ -25,6 +25,9 @@ const CommentSchema = new mongoose.Schema({
     },
     star: {
         type: Number,
+    },
+    urlImageUser: {
+        type: String,
     }
 }, { versionKey: false })
 
