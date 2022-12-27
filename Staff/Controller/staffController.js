@@ -28,19 +28,22 @@ exports.createStaff = (req, res) => {
                     password,
                     id_role
                 });
+
+                bcryptjs.genSalt(10, (err, salt) => {
+                    bcryptjs.hash(newAccount.password, salt, (err, hash) => {
+                        if (err) throw err;
+                        newAccount.password = hash;
+                        newAccount
+                            .save()
+                            .then(account => {
+                                res.send('Account activated. You can now log in.');
+                            })
+                            .catch(err => console.log(err));
+                    });
+                });
                 const id_account = newAccount.id;
                 newAccount.save();
-                // bcryptjs.genSalt(10, (err, salt) => {
-                //     bcryptjs.hash(newAccount.password, salt, (err, hash) => {
-                //         if (err) throw err;
-                //         newAccount.password = hash;
-                //         newAccount
-                //             .save();
-                //     });
-                // });
-
-
-
+              
                 const newStaff = new Staff({
                     fullname,
                     id_account,
