@@ -3,8 +3,10 @@ const auth = require("../middleware/auth");
 const { populate } = require("../Model/Account");
 const { Bill } = require("../Model/Bill");
 const { Cart } = require("../Model/Cart");
+const { Notify } = require("../Model/Notify");
 const { Order_history } = require("../Model/Order_history");
 const { Product } = require("../Model/Product");
+const { Status } = require("../Model/Status");
 const router = express.Router();
 
 router.get("/all/:page", async function (req, res) {
@@ -63,7 +65,7 @@ router.put("/update/:id", async function (req, res) {
       $push: { history: { id_status: req.body.id_status, date: Date.now() } },
     });
     orderhistory = await Order_history.findById(req.params.id)
-      .select(["id_bill", "history"])
+      .select(["id_bill", "history","id_account"])
       .populate({
         path: "id_bill",
         select: [
@@ -100,6 +102,10 @@ router.put("/update/:id", async function (req, res) {
         });
       });
     }
+    const statusName = await Status.findById(req.body.id_status)
+    const content = 'Trạng thái đơn hàng được cập nhật thành '+ statusName.name
+    const notify = new Notify({content:content,idAccount:orderhistory.id_account,idBill:orderhistory._id})
+    await notify.save()
     res
       .status(200)
       .send({ message: "success", status: true, bill: orderhistory });
@@ -147,6 +153,10 @@ router.post("/update-many", async function (req, res) {
             $inc: { sold: product.number },
           });
         });
+        const statusName = await Status.findById(req.body.id_status)
+        const content = 'Trạng thái đơn hàng được cập nhật thành '+ statusName.name
+        const notify = new Notify({content:content,idAccount:orderhistory.id_account,idBill:orderhistory._id})
+        await notify.save()
       });
     }
     res.status(200).send({ message: "success" });

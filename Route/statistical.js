@@ -16,12 +16,14 @@ router.get("/order/:month", async function (req, res) {
     const startDate = year + "-" + month + "-" + (i + 1).toString();
     let endDate = year + "-" + month + "-" + (i + 2).toString();
     const totalOrder = await Bill.find({
+      isCancel:false,
       createAt: {
         $gte: startDate,
         $lt: endDate,
       },
     }).countDocuments();
     const orderOfday = await Bill.find({
+      isCancel:false,
       createAt: {
         $gte: startDate,
         $lte: endDate,
