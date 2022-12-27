@@ -1,5 +1,6 @@
 const Comment = require("../Model/Comment");
 const Rate = require("../Model/Rate");
+const User = require("../Model/User");
 
 //------------ Create ------------//
 exports.createComment = async (req, res) => {
@@ -8,6 +9,8 @@ exports.createComment = async (req, res) => {
     const urlImage = req.body.urlImage;
     const content = req.body.content;
     const id_product = req.body.id_product;
+
+    var user = await User.findOne({ id_account: id_account });
 
     const star = req.body.star;
     var rate = await Rate.findOne({ id_product: id_product });
@@ -37,6 +40,7 @@ exports.createComment = async (req, res) => {
       urlImage: urlImage,
       content: content,
       star: star,
+      urlImageUser: user.urlImage,
     });
     newComment = await newComment.save();
     res.status(200).json({
