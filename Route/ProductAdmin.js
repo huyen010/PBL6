@@ -241,5 +241,12 @@ router.get("/properties", async function getAllSize(req, res) {
     res.status(400).send({ message: "error" });
   }
 });
-
+router.get('/all-product',async function(req,res){
+  try{
+    const listpr = await Product.find({})
+    res.status(200).send({message:'error',listproducts:listpr})
+  }catch(ex){
+    res.status(400).send({message:'error'})
+  }
+})
 module.exports = router;

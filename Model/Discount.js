@@ -11,17 +11,24 @@ const Discount = mongoose.model('Discount',new mongoose.Schema({
         max: 100,
     },
     date_create:{
-        type: Date,
-        default: Date.now()
+        date:{
+            type: String
+        },
+        time:{
+            type: String
+        }
     },
     status:{
         type: Boolean,
-        default: true
+        default: false
     },
-    time:{
-        type: Number,
-        require: true,
-        min:1,
+    dateEnd:{
+        date:{
+            type: String
+        },
+        time:{
+            type: String
+        }
     },
     listProduct: [{
         type: Schema.Types.ObjectId,
