@@ -9,7 +9,7 @@ const headers = {
 
 exports.getProvince = (req, res) => {
   method = 'get'
-  path = '206.189.146.194:3002/api/v1/web/address/province'
+  path = 'http://206.189.146.194:3002/api/v1/web/address/province'
   const api = create({
     baseURL: path,
     timeout: 1000,
