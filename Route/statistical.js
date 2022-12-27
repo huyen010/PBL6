@@ -3,7 +3,8 @@ const router = express.Router();
 const { Bill } = require("../Model/Bill");
 const { Order_history } = require("../Model/Order_history");
 const { Product } = require("../Model/Product");
-router.get("/order/:month", async function (req, res) {
+const admin = require("../middleware/admin1");
+router.get("/order/:month", admin, async function (req, res) {
   const month = parseInt(req.params.month);
   let year = new Date().getFullYear();
   // if(month==12){
@@ -41,7 +42,7 @@ router.get("/order/:month", async function (req, res) {
   }
   res.status(200).send({ order: orderOfMonth });
 });
-router.get("/number-status", async function (req, res) {
+router.get("/number-status", admin, async function (req, res) {
   let number = [];
   const status = [
     "Chờ xác nhận",
@@ -58,7 +59,7 @@ router.get("/number-status", async function (req, res) {
   }
   res.status(200).send({ number: number });
 });
-router.get("/top-product", async function (req, res) {
+router.get("/top-product", admin, async function (req, res) {
   let products = await Product.find({})
     .sort({ sold: -1 })
     .limit(5)

@@ -8,16 +8,15 @@ const {
 } = require("../Model/Product");
 const cloudinary = require("../Config/storage");
 const { Category } = require("../Model/Category");
-const auth = require("../middleware/auth");
+const staffOrAdmin = require("../middleware/staffOrAdmin");
 const { Discount } = require("../Model/Discount");
-var schedule = require("node-schedule");
 const Rate = require("../Model/Rate");
 const { Size } = require("../Model/Size");
 const { Color } = require("../Model/Color");
 
 const router = express.Router();
 
-router.post("/insert", async function (req, res) {
+router.post("/insert", staffOrAdmin , async function (req, res) {
   try {
     const { error } = validateNewProduct(req.body);
     if (!error) return res.status(400).send(error.details[0].message);
@@ -41,7 +40,7 @@ router.post("/insert", async function (req, res) {
     res.status(400).send({ message: "error" });
   }
 });
-router.put("/update/:id", async function (req, res) {
+router.put("/update/:id", staffOrAdmin, async function (req, res) {
   try {
     const { error } = validateUpdateProduct(req.body);
     if (!error) return res.status(400).send(error.details[0].message);
@@ -69,7 +68,7 @@ router.put("/update/:id", async function (req, res) {
     console.log(err);
   }
 });
-router.post("/sell-product/:id", async function (req, res) {
+router.post("/sell-product/:id", staffOrAdmin, async function (req, res) {
   try {
     let product = await Product.findByIdAndUpdate(
       req.params.id,
@@ -89,7 +88,7 @@ router.post("/sell-product/:id", async function (req, res) {
     console.log(err);
   }
 });
-router.get("/detail/:id", async function (req, res) {
+router.get("/detail/:id", staffOrAdmin, async function (req, res) {
   try {
     const product = await Product.findById(req.params.id).populate("id_cate", [
       "name",
@@ -101,7 +100,7 @@ router.get("/detail/:id", async function (req, res) {
   }
 });
 
-router.delete("/delete/:id", async function (req, res) {
+router.delete("/delete/:id", staffOrAdmin, async function (req, res) {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) {
@@ -122,7 +121,7 @@ router.delete("/delete/:id", async function (req, res) {
   }
 });
 
-router.get("/:slug/:search/:page", async function (req, res) {
+router.get("/:slug/:search/:page", staffOrAdmin, async function (req, res) {
   const page = req.params.page;
   const slug = req.params.slug;
   const search = req.params.search;
@@ -155,7 +154,7 @@ router.get("/:slug/:search/:page", async function (req, res) {
     res.status(400).send({ message: "error" });
   }
 });
-router.get("/:slug/:page", async function (req, res) {
+router.get("/:slug/:page", staffOrAdmin, async function (req, res) {
   const page = req.params.page;
   const slug = req.params.slug;
   let count = 0;
@@ -206,7 +205,7 @@ router.get("/:slug/:page", async function (req, res) {
 //     }
 // })
 
-router.post("/discount", async function (req, res) {
+router.post("/discount", staffOrAdmin, async function (req, res) {
   try {
     let dc = new Discount({
       percent: req.body.percent,
@@ -232,7 +231,7 @@ router.post("/discount", async function (req, res) {
 //         const dc = Discount.findOne({id_product: {"$in": req.params.id}})
 //         console.log(dc.percent);
 // })
-router.get("/properties", async function getAllSize(req, res) {
+router.get("/properties", staffOrAdmin, async function getAllSize(req, res) {
   try {
     const size = await Size.find({});
     const color = await Color.find({});
@@ -241,7 +240,7 @@ router.get("/properties", async function getAllSize(req, res) {
     res.status(400).send({ message: "error" });
   }
 });
-router.get('/all-product',async function(req,res){
+router.get('/all-product', staffOrAdmin, async function(req,res){
   try{
     const listpr = await Product.find({})
     res.status(200).send({message:'error',listproducts:listpr})

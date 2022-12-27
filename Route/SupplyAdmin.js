@@ -3,9 +3,10 @@ const { populate, exists } = require("../Model/Account");
 const { Product } = require("../Model/Product");
 const { Representative } = require("../Model/Representative");
 const { Supply } = require("../Model/Supply");
+const staffOrAdmin = require("../middleware/staffOrAdmin");
 
 const router = express.Router();
-router.post("/insert", async function (req, res) {
+router.post("/insert", staffOrAdmin, async function (req, res) {
   try {
     console.log(req.body);
     let representative = new Representative(req.body.representative);
@@ -25,7 +26,7 @@ router.post("/insert", async function (req, res) {
     res.status(400).send({ messsage: "error" });
   }
 });
-router.delete("/delete/:id", async function (req, res) {
+router.delete("/delete/:id", staffOrAdmin, async function (req, res) {
   try {
     let supply = await Supply.findById(req.params.id);
     if (supply.listProduct.length > 0) {
@@ -41,7 +42,7 @@ router.delete("/delete/:id", async function (req, res) {
     res.status(400).send({ messsage: "error" });
   }
 });
-router.get("/all/:page", async function (req, res) {
+router.get("/all/:page", staffOrAdmin, async function (req, res) {
   try {
     const page = req.params.page;
     const supplies = await Supply.find({})
@@ -66,7 +67,7 @@ router.get("/all/:page", async function (req, res) {
     res.status(400).send({ messsage: "error" });
   }
 });
-router.get("/detail/:id", async function (req, res) {
+router.get("/detail/:id", staffOrAdmin, async function (req, res) {
   try {
     const supply = await Supply.findById(req.params.id).populate({
       path: "id_commune",
@@ -82,7 +83,7 @@ router.get("/detail/:id", async function (req, res) {
     res.status(400).send({ messsage: "error" });
   }
 });
-router.get("/representative/:id", async function (req, res) {
+router.get("/representative/:id", staffOrAdmin, async function (req, res) {
   try {
     const representative = await Representative.findById(req.params.id);
     return res.status(200).send({ representative: representative });
@@ -90,7 +91,7 @@ router.get("/representative/:id", async function (req, res) {
     res.status(400).send({ messsage: "error" });
   }
 });
-router.put("/update/:id", async function (req, res) {
+router.put("/update/:id", staffOrAdmin, async function (req, res) {
   try {
     let supply = await Supply.findByIdAndUpdate(
       req.params.id,
@@ -117,7 +118,7 @@ router.put("/update/:id", async function (req, res) {
     res.status(400).send(e);
   }
 });
-router.get("/product/:id", async function (req, res) {
+router.get("/product/:id", staffOrAdmin, async function (req, res) {
   try {
     let supply = await Supply.findById(req.params.id)
       .select(["listProduct", "name"])

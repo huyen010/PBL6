@@ -1,21 +1,21 @@
 const express = require('express');
-const auth = require('../middleware/auth');
+const admin = require('../middleware/admin1');
 const router = express.Router();
 
 //------------ Importing Controllers ------------//
 const paymentMethod = require('../Controller/paymentMethodController');
 
 //------------ create ------------//
-router.post('/', paymentMethod.createPaymentMethod);
+router.post('/', admin, paymentMethod.createPaymentMethod);
 
 //------------ update ------------//
-router.put('/:id', paymentMethod.editPaymentMethod);
+router.put('/:id', admin, paymentMethod.editPaymentMethod);
 
 //------------ get ------------//
-router.get('/', paymentMethod.getPaymentMethod);
+router.get('/', admin, paymentMethod.getPaymentMethod);
 
 //------------ delete ------------//
-router.delete('/:id', paymentMethod.deletePaymentMethod);
+router.delete('/:id', admin, paymentMethod.deletePaymentMethod);
 
 
 module.exports = router;

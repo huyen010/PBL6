@@ -5,6 +5,7 @@ const { Size } = require("../Model/Size");
 const { Stock } = require("../Model/Stock");
 const { StockProduct } = require("../Model/StockProduct");
 const { Supply } = require("../Model/Supply");
+const staffOrAdmin = require("../middleware/staffOrAdmin");
 const router = express.Router();
 function checkProduct(id_product, listProduct) {
   if (listProduct.length === 0) return true;
@@ -35,7 +36,7 @@ async function updateStockProduct(idProduct, size, color, number) {
     );
   }
 }
-router.post("/insert", async function (req, res) {
+router.post("/insert", staffOrAdmin, async function (req, res) {
   try {
     let stock = new Stock({
       dateReceive: req.body.dateReceive,
@@ -89,7 +90,7 @@ async function insertSizeColorProduct(listSize, listColor, idProduct) {
   });
 }
 
-router.get("/all/:page", async function (req, res) {
+router.get("/all/:page", staffOrAdmin, async function (req, res) {
   try {
     const page = req.params.page;
     let stock = await Stock.find({})
@@ -109,7 +110,7 @@ router.get("/all/:page", async function (req, res) {
     res.status(400).send({ message: "error" });
   }
 });
-router.get("/supply/:id/:page", async function (req, res) {
+router.get("/supply/:id/:page", staffOrAdmin, async function (req, res) {
   try {
     const page = req.params.page;
     let stock = await Stock.find({ id_supply: req.params.id })
