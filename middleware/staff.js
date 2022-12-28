@@ -20,6 +20,7 @@ async function staff(req, res, next) {
       } else {
         res.status(400).json({
           message: "Account cannot access this page",
+          id_role: account.id_role,
           status: false,
         });
       }
