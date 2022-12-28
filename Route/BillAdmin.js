@@ -66,7 +66,7 @@ router.put("/update/:id", staffOrAdmin, async function (req, res) {
       $push: { history: { id_status: req.body.id_status, date: Date.now() } },
     });
     orderhistory = await Order_history.findById(req.params.id)
-      .select(["id_bill", "history","id_account"])
+      .select(["id_bill", "history", "id_account"])
       .populate({
         path: "id_bill",
         select: [
@@ -97,16 +97,22 @@ router.put("/update/:id", staffOrAdmin, async function (req, res) {
       })
       .populate("history.id_status", ["name"]);
     if (req.body.id_status === "63691ea23f2070927236ba42") {
+      console.log(orderhistory.id_bill.product);
       orderhistory.id_bill.product.forEach(async (product) => {
         await Product.findByIdAndUpdate(product.id_product._id, {
           $inc: { sold: product.number },
         });
       });
     }
-    const statusName = await Status.findById(req.body.id_status)
-    const content = 'Trạng thái đơn hàng được cập nhật thành '+ statusName.name
-    const notify = new Notify({content:content,idAccount:orderhistory.id_account,idBill:orderhistory._id})
-    await notify.save()
+    const statusName = await Status.findById(req.body.id_status);
+    const content =
+      "Trạng thái đơn hàng được cập nhật thành " + statusName.name;
+    const notify = new Notify({
+      content: content,
+      idAccount: orderhistory.id_account,
+      idBill: orderhistory._id,
+    });
+    await notify.save();
     res
       .status(200)
       .send({ message: "success", status: true, bill: orderhistory });
@@ -119,7 +125,7 @@ router.post("/cancel/:id", staffOrAdmin, async function (req, res) {
   try {
     let orderhistory = await Order_history.findByIdAndUpdate(req.params.id, {
       isCancel: { status: true, date: Date.now(), reason: req.body.reason },
-    });
+    }).populate("id_bill", "product");
     orderhistory.id_bill.product.forEach(async (product) => {
       await Product.findByIdAndUpdate(product.id_product._id, {
         $inc: { sold: product.number * -1 },
@@ -154,10 +160,15 @@ router.post("/update-many", staffOrAdmin, async function (req, res) {
             $inc: { sold: product.number },
           });
         });
-        const statusName = await Status.findById(req.body.id_status)
-        const content = 'Trạng thái đơn hàng được cập nhật thành '+ statusName.name
-        const notify = new Notify({content:content,idAccount:orderhistory.id_account,idBill:orderhistory._id})
-        await notify.save()
+        const statusName = await Status.findById(req.body.id_status);
+        const content =
+          "Trạng thái đơn hàng được cập nhật thành " + statusName.name;
+        const notify = new Notify({
+          content: content,
+          idAccount: orderhistory.id_account,
+          idBill: orderhistory._id,
+        });
+        await notify.save();
       });
     }
     res.status(200).send({ message: "success" });
@@ -165,66 +176,70 @@ router.post("/update-many", staffOrAdmin, async function (req, res) {
     res.status(400).send({ message: "error" });
   }
 });
-router.get("/type/:status/:delivery/:page", staffOrAdmin, async function (req, res) {
-  try {
-    const page = req.params.page;
-    const status = req.params.status;
-    const delivery = req.params.delivery;
-    let count = await Order_history.countDocuments({
-      isCancel: { status: false },
-      history: { $size: status },
-      delivery: delivery,
-    });
-    if (count !== 0) {
-      count = parseInt((count - 1) / 10) + 1;
-    }
-    let orderhistory = await Order_history.find({
-      isCancel: { status: false },
-      history: { $size: status },
-      delivery: delivery,
-    })
-      .sort({ "history.0.date": -1 })
-      .limit(10)
-      .skip((page - 1) * 10)
-      .select(["id_bill", "history"])
-      .populate({
-        path: "id_bill",
-        select: [
-          "id_info",
-          "product",
-          "totalPrice",
-          "createAt",
-          "productPrice",
-          "shipPrice",
-          "payment_method",
-          "delivery",
-        ],
-        populate: [
-          { path: "product.id_product", select: ["name", "urlImage"] },
-          { path: "product.size", select: "name" },
-          { path: "product.color", select: "name" },
-          { path: "payment_method", select: "name" },
-          { path: "delivery", select: "name" },
-          {
-            path: "id_info",
-            select: ["name", "phone", "address"],
-            populate: [
-              { path: "address.id_province", select: "name" },
-              { path: "address.id_district", select: "name" },
-              { path: "address.id_commune", select: "name" },
-            ],
-          },
-        ],
+router.get(
+  "/type/:status/:delivery/:page",
+  staffOrAdmin,
+  async function (req, res) {
+    try {
+      const page = req.params.page;
+      const status = req.params.status;
+      const delivery = req.params.delivery;
+      let count = await Order_history.countDocuments({
+        isCancel: { status: false },
+        history: { $size: status },
+        delivery: delivery,
+      });
+      if (count !== 0) {
+        count = parseInt((count - 1) / 10) + 1;
+      }
+      let orderhistory = await Order_history.find({
+        isCancel: { status: false },
+        history: { $size: status },
+        delivery: delivery,
       })
-      .populate("history.id_status", ["name"]);
-    res
-      .status(200)
-      .send({ message: "success", bills: orderhistory, count: count });
-  } catch (ex) {
-    res.status(400).send({ message: "error", status: false });
-    console.log(ex);
+        .sort({ "history.0.date": -1 })
+        .limit(10)
+        .skip((page - 1) * 10)
+        .select(["id_bill", "history"])
+        .populate({
+          path: "id_bill",
+          select: [
+            "id_info",
+            "product",
+            "totalPrice",
+            "createAt",
+            "productPrice",
+            "shipPrice",
+            "payment_method",
+            "delivery",
+          ],
+          populate: [
+            { path: "product.id_product", select: ["name", "urlImage"] },
+            { path: "product.size", select: "name" },
+            { path: "product.color", select: "name" },
+            { path: "payment_method", select: "name" },
+            { path: "delivery", select: "name" },
+            {
+              path: "id_info",
+              select: ["name", "phone", "address"],
+              populate: [
+                { path: "address.id_province", select: "name" },
+                { path: "address.id_district", select: "name" },
+                { path: "address.id_commune", select: "name" },
+              ],
+            },
+          ],
+        })
+        .populate("history.id_status", ["name"]);
+      res
+        .status(200)
+        .send({ message: "success", bills: orderhistory, count: count });
+    } catch (ex) {
+      res.status(400).send({ message: "error", status: false });
+      console.log(ex);
+    }
   }
-});
+);
 router.get("/detail/:id", staffOrAdmin, async function (req, res) {
   try {
     let orderhistory = await Order_history.findById(req.params.id)
