@@ -5,7 +5,7 @@ const { Product } = require("../Model/Product");
 const router = express.Router();
 const admin = require("../middleware/admin1");
 
-router.get("/all", admin, async function (req, res) {
+router.get("/all", async function (req, res) {
   try {
     const listDiscount = await Discount.find({});
     res.status(200).send({ discounts: listDiscount });
