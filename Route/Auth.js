@@ -27,6 +27,8 @@ router.post('/reset', auth, authController.resetPassword);
 //------------ Login POST Handle ------------//
 router.post('/login', authController.login);
 
+router.post('/login_admin', authController.loginAdmin);
+
 //------------ Logout GET Handle ------------//
 router.get('/logout', authController.logoutHandle);
 

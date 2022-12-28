@@ -458,3 +458,39 @@ exports.logoutHandle = (req, res) => {
     });
   });
 };
+
+//------------ Login Handle ------------//
+exports.loginAdmin = (req, res) => {
+  try {
+    const email = req.body.email.trim().toLowerCase();
+    if (req.body && email && req.body.password) {
+      Account.find({ email: email }, (err, data) => {
+        if (data.length > 0) {
+          if ((bcryptjs.compareSync(req.body.password, data[0].password)) && ((data[0].id_role == 0) || (data[0].id_role== 1))) {
+            checkUserAndGenerateToken(data[0], req, res);
+            
+          } else {
+            res.status(400).json({
+              message: "Email or password is incorrect!",
+              status: false,
+            });
+          }
+        } else {
+          res.status(400).json({
+            message: "Email or password is incorrect!",
+            token: "",
+            status: false,
+          });
+        }
+      });
+    } else {
+      res.status(400).json({
+        message: "Add proper parameter first!",
+        token: "",
+        status: false,
+      });
+    }
+  } catch (e) {
+    res.send(e);
+  }
+};

@@ -8,8 +8,9 @@ const { Order_history } = require("../Model/Order_history");
 const { Product } = require("../Model/Product");
 const { Status } = require("../Model/Status");
 const router = express.Router();
+const staffOrAdmin = require("../middleware/staffOrAdmin");
 
-router.get("/all/:page", async function (req, res) {
+router.get("/all/:page", staffOrAdmin, async function (req, res) {
   try {
     const page = req.params.page;
     let count = await Order_history.countDocuments();
@@ -59,7 +60,7 @@ router.get("/all/:page", async function (req, res) {
     console.log(ex);
   }
 });
-router.put("/update/:id", async function (req, res) {
+router.put("/update/:id", staffOrAdmin, async function (req, res) {
   try {
     let orderhistory = await Order_history.findByIdAndUpdate(req.params.id, {
       $push: { history: { id_status: req.body.id_status, date: Date.now() } },
@@ -114,7 +115,7 @@ router.put("/update/:id", async function (req, res) {
     res.status(400).send({ message: "error", status: false });
   }
 });
-router.post("/cancel/:id", async function (req, res) {
+router.post("/cancel/:id", staffOrAdmin, async function (req, res) {
   try {
     let orderhistory = await Order_history.findByIdAndUpdate(req.params.id, {
       isCancel: { status: true, date: Date.now(), reason: req.body.reason },
@@ -130,7 +131,7 @@ router.post("/cancel/:id", async function (req, res) {
     res.status(400).send({ message: "error", status: false });
   }
 });
-router.post("/update-many", async function (req, res) {
+router.post("/update-many", staffOrAdmin, async function (req, res) {
   try {
     const listID = req.body.listID;
     await Order_history.updateMany(
@@ -164,7 +165,7 @@ router.post("/update-many", async function (req, res) {
     res.status(400).send({ message: "error" });
   }
 });
-router.get("/type/:status/:delivery/:page", async function (req, res) {
+router.get("/type/:status/:delivery/:page", staffOrAdmin, async function (req, res) {
   try {
     const page = req.params.page;
     const status = req.params.status;
@@ -224,7 +225,7 @@ router.get("/type/:status/:delivery/:page", async function (req, res) {
     console.log(ex);
   }
 });
-router.get("/detail/:id", async function (req, res) {
+router.get("/detail/:id", staffOrAdmin, async function (req, res) {
   try {
     let orderhistory = await Order_history.findById(req.params.id)
       .select(["id_bill", "history", "isCancel"])

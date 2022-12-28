@@ -3,7 +3,9 @@ const { Discount } = require("../Model/Discount");
 var schedule = require("node-schedule");
 const { Product } = require("../Model/Product");
 const router = express.Router();
-router.get("/all", async function (req, res) {
+const admin = require("../middleware/admin1");
+
+router.get("/all", admin, async function (req, res) {
   try {
     const listDiscount = await Discount.find({});
     res.status(200).send({ discounts: listDiscount });
@@ -11,7 +13,7 @@ router.get("/all", async function (req, res) {
     res.status(400).send({ message: "error" });
   }
 });
-router.post("/insert", async function (req, res) {
+router.post("/insert", admin, async function (req, res) {
   try {
     let discount = new Discount({
       percent: req.body.percent,
@@ -50,7 +52,7 @@ router.post("/insert", async function (req, res) {
     res.status(400).send({ message: "error" });
   }
 });
-router.delete("/delete/:id", async function (req, res) {
+router.delete("/delete/:id", admin, async function (req, res) {
   try {
     const id = req.params.id;
     let dc = await Discount.findByIdAndDelete(id);
@@ -64,7 +66,7 @@ router.delete("/delete/:id", async function (req, res) {
     res.status(400).send({ message: "error" });
   }
 });
-router.put("/update/:id", async function (req, res) {
+router.put("/update/:id", admin, async function (req, res) {
   try {
     const id = req.params.id;
     const dc = await Discount.findByIdAndUpdate(id,{status:false})
