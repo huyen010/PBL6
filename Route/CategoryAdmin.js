@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const { cloudinary } = require("../storage");
 const upload = require("../multer");
 const admin = require("../middleware/admin1");
+const staffOrAdmin = require("../middleware/staffOrAdmin");
 
 const router = express.Router();
 // const auth = require('../middleware/auth');
@@ -21,9 +22,9 @@ const CateAdmin = require("../Controller/CateAdmin");
 // router.delete('/delete/:id',auth,CheckRole('deleteAny','Category'),CateAdmin.deleteCate)
 
 // get list category
-router.get("/all", admin, CateAdmin.GetListCate);
+router.get("/all", staffOrAdmin, CateAdmin.GetListCate);
 //get by Id
-router.get("/detail/:slug", admin, CateAdmin.GetCateDetail);
+router.get("/detail/:slug", staffOrAdmin, CateAdmin.GetCateDetail);
 // thêm category
 router.post("/insert", admin, CateAdmin.InsertCate);
 // update cate

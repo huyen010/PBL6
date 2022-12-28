@@ -12,7 +12,7 @@ router.post('/', admin, paymentMethod.createPaymentMethod);
 router.put('/:id', admin, paymentMethod.editPaymentMethod);
 
 //------------ get ------------//
-router.get('/', admin, paymentMethod.getPaymentMethod);
+router.get('/', paymentMethod.getPaymentMethod);
 
 //------------ delete ------------//
 router.delete('/:id', admin, paymentMethod.deletePaymentMethod);
