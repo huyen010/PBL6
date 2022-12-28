@@ -1,15 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const staff = require('../Controller/Staff.js')
+const admin = require('../middleware/admin1');
 
 
-
-router.get('/', staff.getAllStaff)
+router.get('/', admin, staff.getAllStaff)
 
 router.get('/:id', staff.getStaff)
 
-router.put('/:id', staff.updateStaff)
+router.put('/:id', admin, staff.updateStaff)
 
-router.delete('/:id', staff.deleteStaff)
+router.delete('/:id', admin, staff.deleteStaff)
 
 module.exports = router;

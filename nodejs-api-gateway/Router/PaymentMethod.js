@@ -1,15 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const paymentMethod = require('../Controller/PaymentMethod.js')
+const admin = require('../middleware/admin1');
 
 
-
-router.post('/', paymentMethod.createPaymentMethod)
+router.post('/', admin, paymentMethod.createPaymentMethod)
 
 router.get('/', paymentMethod.getPaymentMethod)
 
-router.put('/:id', paymentMethod.updatePaymentMethod)
+router.put('/:id', admin, paymentMethod.updatePaymentMethod)
 
-router.delete('/:id', paymentMethod.deletePaymentMethod)
+router.delete('/:id', admin, paymentMethod.deletePaymentMethod)
 
 module.exports = router;
