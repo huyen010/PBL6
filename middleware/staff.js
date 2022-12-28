@@ -16,12 +16,16 @@ async function staff(req, res, next) {
       const id_account = req.user.id;
       var account = await Account.findOne({ _id: id_account });
       if (account.id_role == 1) {
-        next();
-      } else {
-        res.status(400).json({
-          message: "Account cannot access this page",
+        res.status(200).json({
+          // message: "Account cannot access this page",
           id_role: account.id_role,
           status: false,
+        });
+      } else {
+        res.status(200).json({
+          // message: "Account cannot access this page",
+          id_role: account.id_role,
+          status: true,
         });
       }
     } catch (ex) {
