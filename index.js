@@ -39,6 +39,7 @@ const statistical = require('./Route/statistical')
 const discount = require('./Route/Discount')
 const upload = require('./Route/Upload');
 const notification = require('./Route/Notify');
+const checkStaff = require('./Route/CheckStaff');
 
 mongoose.connect('mongodb+srv://pnquang:quang123123a@cluster0.eenmlxn.mongodb.net/?retryWrites=true&w=majority')
     .then(() => console.log('Connected to MongoDB...'))
@@ -67,5 +68,6 @@ app.use('/api/v1/web/paymentmethod', paymentMethod);
 app.use('/api/v1/cms/statistical',statistical);
 app.use('/api/v1/cms/discount',discount);
 app.use('/api/v1/web/notification',notification);
+app.use('/api/v1/web/staff/check',checkStaff);
 const port = process.env.PORT || 3002;
 http.listen(port, () => console.log('Socket listening on port...' + port));
