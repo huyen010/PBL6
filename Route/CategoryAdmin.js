@@ -22,9 +22,9 @@ const CateAdmin = require("../Controller/CateAdmin");
 // router.delete('/delete/:id',auth,CheckRole('deleteAny','Category'),CateAdmin.deleteCate)
 
 // get list category
-router.get("/all", staffOrAdmin, CateAdmin.GetListCate);
+router.get("/all", CateAdmin.GetListCate);
 //get by Id
-router.get("/detail/:slug", staffOrAdmin, CateAdmin.GetCateDetail);
+router.get("/detail/:slug", CateAdmin.GetCateDetail);
 // thêm category
 router.post("/insert", admin, CateAdmin.InsertCate);
 // update cate
